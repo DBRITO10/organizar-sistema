@@ -1,0 +1,39 @@
+:root {
+    --primary: #d32f2f;
+    --bg-body: #fdf2f2;
+    --bg-card: #ffffff;
+    --text-dark: #333333;
+    --border: #f0d8d8;
+    --gray-text: #777777;
+}
+
+body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--bg-body);
+    min-height: 100vh;
+    color: var(--text-dark);
+    overflow-x: hidden;
+}
+
+.top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--bg-card); border-bottom: 1px solid var(--border); }
+.logo-area { display: flex; align-items: center; gap: 15px; }
+.btn-back-portal { color: var(--primary); text-decoration: none; font-size: 1.2rem; display: flex; align-items: center; }
+.logo-area h1 { margin: 0; font-size: 1rem; color: var(--text-dark); text-transform: uppercase; }
+
+.user-badge { background: #eee; padding: 5px 12px; border-radius: 20px; color: var(--text-dark); font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+.btn-logout { background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; }
+
+.welcome-section { text-align: center; margin: 40px auto 30px auto; }
+.welcome-section h2 { font-size: 1.6rem; color: var(--text-dark); margin: 0; }
+.welcome-section p { color: var(--gray-text); font-size: 1rem; margin-top: 5px; }
+
+.main-container { max-width: 1100px; margin: 0 auto 50px auto; padding: 0 15px; }
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+.card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 25px 15px; text-align: center; text-decoration: none; color: var(--text-dark); transition: 0.3s; display: flex; flex-direction: column; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.card:hover { border-color: var(--primary); transform: translateY(-3px); }
+.card i { font-size: 2.2rem; margin-bottom: 12px; color: var(--primary); }
+.card h3 { margin: 5px 0; font-size: 1.1rem; }
+.card p { font-size: 0.8rem; color: var(--gray-text); height: 40px; margin: 5px 0; }
+.card-action { margin-top: 15px; background: var(--primary); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+.footer { text-align: center; padding: 20px; color: var(--gray-text); font-size: 0.75rem; }
