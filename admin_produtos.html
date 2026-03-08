@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADM - Gestão de Estoque Simonetti</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <div class="nav-left">
+        <a href="admin_painel.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
+        <i class="fas fa-box-open" style="color: var(--accent);"></i>
+        <span>ESTOQUE TRANSBORDO</span>
+    </div>
+    <a href="#" id="btnLogout" class="btn-sair">SAIR</a>
+</nav>
+
+<div class="container">
+    <div class="card-form">
+        <h2 id="formTitle"><i class="fas fa-plus-circle" style="color: var(--accent);"></i> Novo Cadastro / Entrada</h2>
+        <input type="hidden" id="editId">
+        <div class="form-grid">
+            <div class="input-group">
+                <label>Fornecedor</label>
+                <input type="text" id="f" placeholder="Ex: ELECTROLUX">
+            </div>
+            <div class="input-group">
+                <label>Código</label>
+                <input type="text" id="c" placeholder="Ex: 102030">
+            </div>
+            <div class="input-group">
+                <label>Descrição do Produto</label>
+                <input type="text" id="d" placeholder="Ex: Smart TV 50...">
+            </div>
+            <div class="input-group">
+                <label>Valor Unitário (R$)</label>
+                <input type="number" step="0.01" id="v" placeholder="0.00">
+            </div>
+            <div class="input-group">
+                <label>Qtd Inicial</label>
+                <input type="number" id="q" value="0">
+            </div>
+        </div>
+        <button class="btn-salvar" id="btnPrincipal" onclick="salvarProduto()">SALVAR NA VITRINE</button>
+        <button id="btnCancelaEdit" style="display:none; background:#e0e0e0; border:none; color:#333; margin-top:10px; padding:10px; cursor:pointer; width:100%; border-radius:6px; font-weight:bold;" onclick="cancelarEdicao()">CANCELAR EDIÇÃO</button>
+    </div>
+
+    <div class="card-lista">
+        <div class="busca-box">
+            <input type="text" id="inputBusca" placeholder="🔍 Filtrar por descrição ou código..." onkeyup="filtrar()">
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>FORNECEDOR</th>
+                        <th>CÓDIGO</th>
+                        <th>DESCRIÇÃO</th>
+                        <th>VALOR</th>
+                        <th>QTD</th>
+                        <th>AÇÕES</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabela"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="module" src="js/admin_produtos.js"></script>
+</body>
+</html>
