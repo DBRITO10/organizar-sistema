@@ -14,8 +14,10 @@ body {
     background-color: var(--secondary); 
     margin: 0; 
     padding-top: 80px; 
-    min-height: 100vh;
+    min-height: 100vh; /* Altura mínima da tela inteira */
     color: var(--text-dark);
+    display: flex;         /* Habilita o Flexbox */
+    flex-direction: column; /* Coloca os elementos em coluna */
 }
 
 /* BARRA SUPERIOR */
@@ -53,12 +55,18 @@ body {
 .btn-logout:hover { background: var(--danger); color: white; }
 
 /* CONTEÚDO */
-.container { max-width: 900px; margin: auto; padding: 20px; }
+.container { 
+    max-width: 900px; 
+    margin: auto; 
+    padding: 20px; 
+    flex: 1; /* Faz o container ocupar todo o espaço sobrando */
+}
+
 .welcome { margin-bottom: 40px; color: var(--text-dark); text-align: center; }
 .welcome h2 { font-size: 1.8rem; margin-bottom: 10px; }
 .welcome p { color: var(--text-light); }
 
-/* GRID DE MENU - Ajustado para 3 colunas fixas no PC */
+/* GRID DE MENU - 3 Colunas no PC */
 .menu-grid { 
     display: grid; 
     grid-template-columns: repeat(3, 1fr); 
@@ -107,10 +115,12 @@ body {
     .welcome h2 { font-size: 1.4rem; }
 }
 
+/* RODAPÉ */
 .footer-credits {
     text-align: center; 
     width: 100%;
     padding: 20px 0;
     color: #999;
     font-size: 0.8rem;
+    margin-top: auto; /* Empurra para baixo automaticamente */
 }
