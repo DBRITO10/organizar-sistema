@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simonetti - Gestão de Estoque</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="css/estoque.css">
+</head>
+<body>
+
+  <div class="content">
+      <div class="glass-panel" style="display:flex; gap:10px; align-items:center;">
+          <input type="text" id="filtroCod" placeholder="Cód. Prod/SKU" onkeyup="window.filtrarEstoque()" style="width:130px;">
+          <select id="filtroForn" onchange="window.filtrarEstoque()" style="flex:1;">
+              <option value="">Todos os Fornecedores</option>
+          </select>
+          <input type="text" id="filtroDesc" placeholder="Descrição..." onkeyup="window.filtrarEstoque()" style="flex:2;">
+          <button onclick="window.limparFiltros()" class="btn" style="background:#6c757d; color:white;"><i class="fas fa-eraser"></i></button>
+          <div id="countDisplay" style="background:var(--primary); color:white; padding:8px 15px; border-radius:5px; font-weight:bold;">0</div>
+      </div>
+      <div id="gridEnderecos" class="grid-enderecos"></div>
+  </div>
+
+  <script type="module" src="js/estoque.js"></script>
+</body>
+</html>
