@@ -24,3 +24,13 @@ onAuthStateChanged(auth, async user => {
 document.getElementById("btnLogout").onclick = () => {
     auth.signOut().then(() => { window.location.href = "index.html"; });
 };
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+}
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
