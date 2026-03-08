@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Performance - Simonetti</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    </head>
+<body>
+
+<nav class="top-nav">
+    <div class="nav-left">
+        <a href="admin_painel.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
+        <i class="fas fa-chart-line" style="color: var(--warning);"></i>
+        <span>PERFORMANCE DE VENDAS (MÊS)</span>
+    </div>
+    <a href="#" id="btnSair" class="btn-sair">SAIR</a>
+</nav>
+
+<div class="container">
+    <div class="filter-section">
+        <div class="filter-group">
+            <label>Data Início</label>
+            <input type="date" id="dataInicio">
+        </div>
+        <div class="filter-group">
+            <label>Data Fim</label>
+            <input type="date" id="dataFim">
+        </div>
+        <button class="btn-filter" id="btnFiltrar">ATUALIZAR DASHBOARD</button>
+    </div>
+    </div>
+
+<div class="modal" id="modalPedidos">
+    </div>
+
+<script type="module" src="js/admin_dashboard.js"></script>
+</body>
+</html>
