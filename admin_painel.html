@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADM - Painel Central Simonetti</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#004a99">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin_painel.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <div class="user-info">
+        <a href="portal.html" class="btn-back" title="Voltar ao Portal">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <i class="fas fa-user-shield" style="color: var(--accent);"></i>
+        <span>ADM: <b id="navNome">...</b> | <span id="navUnidade">...</span></span>
+    </div>
+    <div style="font-weight: bold; letter-spacing: 1px;">GESTÃO DE ESTOQUE</div>
+    <a href="#" id="btnLogout" class="btn-logout"><i class="fas fa-sign-out-alt"></i> SAIR</a>
+</nav>
+
+<div class="container">
+    <div class="welcome">
+        <h2>Pagina de Transbordo</h2>
+        <p>Selecione a operação que deseja prosseguir.</p>
+    </div>
+
+    <div class="menu-grid">
+        <a href="admin_vitrine.html" class="menu-card">
+            <i class="fas fa-store"></i>
+            <h3>Ver Vitrine</h3>
+            <p>Visualizar produtos e estoque disponível.</p>
+        </a>
+        
+        <a href="admin_pedidos.html" class="menu-card">
+            <i class="fas fa-clipboard-check"></i>
+            <h3>Gerenciar Pedidos</h3>
+            <p>Aprovar e confirmar transferências.</p>
+        </a>
+         
+        <a href="admin_produtos.html" class="menu-card">
+            <i class="fas fa-box-open"></i>
+            <h3>Cadastrar Itens</h3>
+            <p>Alimentar a vitrine de transbordo.</p>
+        </a>
+
+         <a href="admin_dashboard.html" class="menu-card">
+            <i class="fas fa-chart-line"></i>
+            <h3>Desempenho</h3>
+            <p>Ranking de pedidos e líderes ativos.</p>
+        </a> 
+        
+        <a href="colaboradores.html" class="menu-card">
+            <i class="fas fa-users"></i>
+            <h3>Equipe / Unidades</h3>
+            <p>Gerenciar permissões.</p>
+        </a>
+    </div>
+</div>
+
+<footer class="footer-credits">
+    <p>&copy; 2026 Móveis Simonetti - Developed by DB</p>
+</footer>    
+    
+<script type="module" src="js/admin_painel.js"></script>
+
+</body>
+</html>
