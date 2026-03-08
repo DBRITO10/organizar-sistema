@@ -9,7 +9,45 @@
 </head>
 <body>
 
+  <nav class="top-nav">
+    <div class="nav-left">
+      <a href="pagina.html"><i class="fas fa-arrow-left"></i></a>
+      <h1>Histórico de Movimentações</h1>
+    </div>
+    
+    <div class="nav-right">
+        <div class="user-badge" id="labelUser"><i class="fas fa-user-circle"></i> Carregando...</div>
+        <button id="btnLogout" class="btn-nav" style="background: var(--danger);"><i class="fas fa-sign-out-alt"></i> SAIR</button>
+    </div>
+  </nav>
+
   <div class="container">
+    <div class="glass-panel">
+      <div class="filter-grid">
+        <div class="filter-group">
+          <label>DATA:</label>
+          <input type="date" id="filtroData">
+        </div>
+        <div class="filter-group">
+          <label>AÇÃO:</label>
+          <select id="filtroTipo">
+            <option value="Todos">Todas as Ações</option>
+            <option value="Entrada">Entradas</option>
+            <option value="Saída">Saídas</option>
+            <option value="Tentativa de Exclusão Bloqueada">Tentativa de Exclusão Bloqueada</option>
+            <option value="Transferência">Transferência</option>
+            <option value="Criação de SKU">Criação de SKU</option>
+            <option value="Criação Produto Master">Criação Produto Master</option>
+            <option value="Exclusão Produto Master">Exclusão Produto Master</option>
+            <option value="Exclusão de SKU">Exclusão de SKU</option>
+            <option value="Edição Produto Master">Edição Produto Master</option>
+            <option value="Edição de SKU">Edição de SKU</option>
+          </select>
+        </div>
+        <button id="btnLimpar" class="btn-nav" style="background: var(--primary); height: 40px;">LIMPAR FILTROS</button>
+      </div>
+    </div>
+
     <div class="glass-panel" style="padding: 0; overflow: hidden;">
       <div class="table-container">
         <table>
