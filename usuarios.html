@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestão de Usuários - Simonetti</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/usuarios.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2 style="color: var(--primary);">Gestão de Equipe</h2>
+        <div id="listaUsuarios" class="glass-card">
+            </div>
+    </div>
+
+    <div id="modalNome" class="modal">
+        <div class="modal-content">
+            <h3>Editar Nome</h3>
+            <input type="text" id="inputNome" placeholder="Novo nome...">
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <button onclick="window.fecharModal()" class="btn-secundario">Cancelar</button>
+                <button id="btnSalvarNome" class="btn-primario">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/usuarios.js"></script>
+</body>
+</html>
