@@ -1,0 +1,44 @@
+:root { 
+    --primary: #d32f2f;
+    --secondary: #fdf2f2;
+    --text-dark: #333333;
+    --text-light: #666666;
+    --accent: #d32f2f;
+    --pendente: #f57c00;
+    --concluido: #2e7d32;
+    --cancel: #c62828;
+    --white: #ffffff;
+    --border-color: #f0d8d8;
+}
+
+body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--secondary); margin: 0; padding-top: 80px; min-height: 100vh; color: var(--text-dark); }
+
+.top-nav { background: var(--white); height: 65px; border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
+.btn-voltar { color: var(--primary); text-decoration: none; font-weight: 600; }
+.btn-sair { background: #feeceb; color: var(--cancel); text-decoration: none; padding: 6px 15px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; border: 1px solid #f8d7da; transition: 0.3s; }
+.btn-sair:hover { background: var(--cancel); color: white; }
+
+.container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+.titulo-pagina { text-align: center; color: var(--text-dark); background: var(--white); padding: 15px; font-size: 1.2rem; text-transform: uppercase; font-weight: 700; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 20px; }
+.input-busca { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--white); font-size: 1rem; box-sizing: border-box; }
+.filtro-data-container { background: var(--white); padding: 15px; border-radius: 8px; margin: 20px 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; border: 1px solid var(--border-color); }
+
+.card-pedido { background: var(--white); border-radius: 8px; margin-bottom: 12px; border-left: 6px solid #ccc; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+.card-pendente { border-left-color: var(--pendente); }
+.card-concluido { border-left-color: var(--concluido); }
+.card-header-click { padding: 15px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.card-body-expansivel { display: none; padding: 0 20px 20px 20px; border-top: 1px solid var(--border-color); }
+.loja-nome { font-weight: 700; color: var(--text-dark); font-size: 1.1rem; }
+.status-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; background: var(--secondary); }
+
+.itens-lista-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.itens-lista-table th { text-align: left; padding: 10px; background: var(--secondary); font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; }
+.itens-lista-table td { padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
+.btn-remover-item { color: var(--cancel); border: none; background: none; cursor: pointer; }
+
+.acao-admin { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+.btn-confirmar { background: var(--concluido); color: white; border: none; padding: 12px; border-radius: 5px; flex: 2; font-weight: bold; }
+.btn-cancelar-pedido { background: var(--cancel); color: white; border: none; padding: 12px; border-radius: 5px; flex: 1; font-weight: bold; }
+.btn-pdf { background: var(--primary); color: white; border: 1px solid var(--border-color); padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+
+@media (max-width: 600px) { .acao-admin { flex-direction: column; } .btn-confirmar, .btn-cancelar-pedido, .btn-pdf { width: 100%; } }
