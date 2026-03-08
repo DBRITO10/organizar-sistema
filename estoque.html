@@ -9,19 +9,65 @@
 </head>
 <body>
 
-  <div class="content">
-      <div class="glass-panel" style="display:flex; gap:10px; align-items:center;">
-          <input type="text" id="filtroCod" placeholder="Cód. Prod/SKU" onkeyup="window.filtrarEstoque()" style="width:130px;">
-          <select id="filtroForn" onchange="window.filtrarEstoque()" style="flex:1;">
-              <option value="">Todos os Fornecedores</option>
-          </select>
-          <input type="text" id="filtroDesc" placeholder="Descrição..." onkeyup="window.filtrarEstoque()" style="flex:2;">
-          <button onclick="window.limparFiltros()" class="btn" style="background:#6c757d; color:white;"><i class="fas fa-eraser"></i></button>
-          <div id="countDisplay" style="background:var(--primary); color:white; padding:8px 15px; border-radius:5px; font-weight:bold;">0</div>
-      </div>
-      <div id="gridEnderecos" class="grid-enderecos"></div>
+<nav class="top-nav">
+  <div style="display:flex; align-items:center; gap:15px;">
+    <a href="pagina.html" style="color:var(--text-dark); font-size:1.2rem; text-decoration:none;">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <h2 style="color:var(--primary); margin:0; letter-spacing:1px; font-size: 16px;">
+      MS <span style="color:var(--text-dark); font-weight:100; font-size:12px;">ESTOQUE 600</span>
+    </h2>
+    <a href="produtos.html" class="btn" style="background:#eee; color:var(--text-dark); font-size:10px; padding: 8px;">
+      <i class="fas fa-box-open"></i> PRODUTOS
+    </a>
   </div>
 
-  <script type="module" src="js/estoque.js"></script>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <div id="userDisplay" class="user-badge" style="color:var(--text-dark);"></div>
+    <button id="btnNovoEnd" onclick="window.abrirModalNovoEnd()" class="btn" style="display:none; background:var(--success); color:white; padding: 8px 12px;">
+      <i class="fas fa-plus"></i>
+    </button>
+    <button onclick="window.logout()" class="btn" style="background:var(--danger); color:white; padding: 8px 12px;">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+  </div>
+</nav>
+
+<div class="main-container">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <span><i class="fas fa-boxes"></i> PENDENTES</span>
+      <span id="countPendentes" style="background:var(--warning); color:black; padding:2px 8px; border-radius:10px; font-weight:bold; font-size:12px;">0</span>
+    </div>
+    <div id="listaPendentes" class="scroll-area"></div>
+  </div>
+
+  <div class="content">
+    <div class="glass-panel" style="display:flex; gap:10px; align-items:center;">
+        <input type="text" id="filtroCod" placeholder="Cód. Prod/SKU" onkeyup="window.filtrarEstoque()" style="width:130px;">
+        <select id="filtroForn" onchange="window.filtrarEstoque()" style="flex:1;">
+            <option value="">Todos os Fornecedores</option>
+        </select>
+        <input type="text" id="filtroDesc" placeholder="Descrição..." onkeyup="window.filtrarEstoque()" style="flex:2;">
+        <button onclick="window.limparFiltros()" class="btn" style="background:#6c757d; color:white;"><i class="fas fa-eraser"></i></button>
+        <div id="countDisplay" style="background:var(--primary); color:white; padding:8px 15px; border-radius:5px; font-weight:bold;">0</div>
+    </div>
+
+    <div id="gridEnderecos" class="grid-enderecos"></div>
+  </div>
+</div>
+
+<div id="modalMaster" class="modal">
+  <div class="modal-content">
+    <h3 id="modalTitle" style="margin-top:0; color:var(--primary); font-size: 18px;">Ação</h3>
+    <div id="modalBody"></div>
+    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button onclick="window.fecharModal()" class="btn" style="background:#eee; flex:1;">Voltar</button>
+      <button class="btn btn-primary" style="flex:1;">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/estoque.js"></script>
 </body>
 </html>
