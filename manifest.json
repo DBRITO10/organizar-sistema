@@ -1,0 +1,25 @@
+{
+  "name": "Assistência_MS",
+  "short_name": "Assistência_MS",
+  "description": "Sistema de controle de Transbordo da 600",
+  "start_url": "./portal.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#002d5f",
+  "theme_color": "#004a99",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
