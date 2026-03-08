@@ -1,38 +1,37 @@
-import { auth, db } from "./firebase-config.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+<script type="module">
+    import { auth, db } from "./js/firebase-config.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-// Lógica de Service Worker
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-        .then(reg => console.log('SW registrado!', reg))
-        .catch(err => console.log('Erro no SW', err));
-}
+    // Lógica permanece idêntica à original
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('SW registrado!', reg))
+            .catch(err => console.log('Erro no SW', err));
+    }
 
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-});
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+    });
 
-// Verificação de autenticação
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists()) {
-            const data = userDoc.data();
-            document.getElementById("navNome").innerText = data.nomeCompleto;
-            document.getElementById("navUnidade").innerText = data.unidade || "Administração";
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (userDoc.exists()) {
+                const data = userDoc.data();
+                document.getElementById("navNome").innerText = data.nomeCompleto;
+                document.getElementById("navUnidade").innerText = data.unidade || "Administração";
+            }
+        } else {
+            window.location.href = "index.html";
         }
-    } else {
-        window.location.href = "index.html";
-    }
-});
+    });
 
-// Logout
-document.getElementById("btnLogout").onclick = (e) => {
-    e.preventDefault();
-    if(confirm("Deseja realmente sair?")) {
-        signOut(auth).then(() => window.location.href = "index.html");
-    }
-};
+    document.getElementById("btnLogout").onclick = (e) => {
+        e.preventDefault();
+        if(confirm("Deseja realmente sair?")) {
+            signOut(auth).then(() => window.location.href = "index.html");
+        }
+    };
