@@ -6,7 +6,8 @@
     <title>Dashboard de Performance - Simonetti</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
-    </head>
+    <link rel="stylesheet" href="css/admin_dashboard.css">
+</head>
 <body>
 
 <nav class="top-nav">
@@ -30,10 +31,44 @@
         </div>
         <button class="btn-filter" id="btnFiltrar">ATUALIZAR DASHBOARD</button>
     </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class="fas fa-shopping-cart"></i>
+            <h3>Pedidos Concluídos</h3>
+            <div class="value" id="statPedidos">0</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-boxes"></i>
+            <h3>Peças Movimentadas</h3>
+            <div class="value" id="statPecas">0</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-dollar-sign"></i>
+            <h3>Volume Financeiro</h3>
+            <div class="value" id="statFinanceiro">R$ 0,00</div>
+        </div>
     </div>
 
-<div class="modal" id="modalPedidos">
+    <div class="ranking-section">
+        <div class="rank-card">
+            <h2><i class="fas fa-medal"></i> Ranking de Unidades (Lojas)</h2>
+            <div id="rankLojas"></div>
+        </div>
+        <div class="rank-card">
+            <h2><i class="fas fa-trophy"></i> Ranking de Líderes (Gerentes)</h2>
+            <div id="rankLideres"></div>
+        </div>
     </div>
+</div>
+
+<div class="modal" id="modalPedidos">
+    <div class="modal-content">
+        <span class="close-modal" onclick="fecharModal()">&times;</span>
+        <h2 id="modalTitle" style="margin-top:0">Pedidos de: </h2>
+        <div id="listaPedidosModal"></div>
+    </div>
+</div>
 
 <script type="module" src="js/admin_dashboard.js"></script>
 </body>
