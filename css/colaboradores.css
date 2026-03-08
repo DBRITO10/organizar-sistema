@@ -1,0 +1,41 @@
+:root {
+    --primary: #d32f2f;
+    --secondary: #fdf2f2;
+    --accent: #d32f2f;
+    --text-dark: #333333;
+    --text-light: #666666;
+    --white: #ffffff;
+    --border-color: #f0d8d8;
+    --danger: #c62828;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--secondary); color: var(--text-dark); margin: 0; padding-top: 80px; min-height: 100vh; }
+
+.top-nav { background: var(--white); color: var(--text-dark); padding: 0 30px; height: 65px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+.btn-voltar { color: var(--primary); text-decoration: none; font-weight: 600; transition: 0.3s; }
+
+.container { max-width: 900px; margin: auto; padding: 0 20px; }
+
+.search-container { margin-bottom: 25px; }
+.search-container input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--white); font-size: 1rem; outline: none; color: var(--text-dark); transition: 0.3s; }
+.search-container input:focus { border-color: var(--primary); }
+
+.user-card { background: var(--white); border-radius: 10px; padding: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); border-left: 5px solid #ccc; transition: 0.3s; box-shadow: 0 3px 6px rgba(0,0,0,0.03); }
+.role-admin { border-left-color: var(--primary); }
+.role-lider { border-left-color: #2e7d32; }
+
+.user-info b { display: block; font-size: 1.1rem; color: var(--text-dark); margin-bottom: 2px; }
+.user-info span { font-size: 0.85rem; color: var(--text-light); }
+.user-info small { color: var(--primary); font-weight: bold; text-transform: uppercase; font-size: 0.75rem; }
+
+.actions { display: flex; gap: 10px; }
+.btn { border: none; padding: 9px 15px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.3s; color: white; }
+.btn-role { background: var(--secondary); color: var(--text-dark); border: 1px solid var(--border-color); }
+.btn-role:hover { background: var(--border-color); }
+.btn-delete { background: #feeceb; color: var(--danger); border: 1px solid #f8d7da; }
+.btn-delete:hover { background: var(--danger); color: white; }
+
+@media (max-width: 600px) { .user-card { flex-direction: column; text-align: center; gap: 15px; } .actions { width: 100%; justify-content: center; } }
