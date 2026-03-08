@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>ADM - Gerenciar Equipe Simonetti</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/colaboradores.css">
+</head>
+<body>
+
+<nav class="top-nav">
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <a href="admin_painel.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
+        <i class="fas fa-users-cog" style="color: var(--accent);"></i>
+        <span>GESTÃO DE EQUIPE</span>
+    </div>
+    <div id="countUsers" style="font-size: 0.8rem; font-weight: bold;">...</div>
+</nav>
+
+<div class="container">
+    <div class="search-container">
+        <input type="text" id="buscaUser" placeholder="🔍 Buscar por nome, loja ou e-mail..." onkeyup="filtrarUsers()">
+    </div>
+    <div id="listaUsuarios"></div>
+</div>
+
+<script type="module" src="js/colaboradores.js"></script>
+</body>
+</html>
