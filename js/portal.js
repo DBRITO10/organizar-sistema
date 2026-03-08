@@ -1,12 +1,16 @@
 import { auth, db } from "./firebase-config.js";
-import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         try {
             const userDoc = await getDoc(doc(db, "users", user.uid));
-            document.getElementById("displayName").innerText = userDoc.exists() ? userDoc.data().nomeCompleto : user.email;
+            if (userDoc.exists()) {
+                document.getElementById("displayName").innerText = userDoc.data().nomeCompleto;
+            } else {
+                document.getElementById("displayName").innerText = user.email;
+            }
         } catch (e) {
             document.getElementById("displayName").innerText = "Usuário";
         }
@@ -19,7 +23,6 @@ document.getElementById("btnSair").onclick = () => {
     signOut(auth).then(() => window.location.href = "index.html");
 };
 
-// Lógica de PWA (Instalação)
 let deferredPrompt;
 const btnInstall = document.getElementById('btnInstall');
 
@@ -33,7 +36,14 @@ btnInstall.addEventListener('click', async () => {
     if (deferredPrompt) {
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') btnInstall.style.display = 'none';
+        if (outcome === 'accepted') {
+            btnInstall.style.display = 'none';
+        }
         deferredPrompt = null;
     }
+});
+
+window.addEventListener('appinstalled', () => {
+    btnInstall.style.display = 'none';
+    deferredPrompt = null;
 });
