@@ -14,12 +14,42 @@
     <meta name="theme-color" content="#002d5f">
 </head>
 <body>
+    <nav class="top-bar">
+        <div class="user-info">
+            <i class="fas fa-home"></i> 
+            <span id="displayName">Carregando...</span>
+        </div>
+        <button id="btnSair" class="logout-btn">
+            Sair <i class="fas fa-sign-out-alt"></i>
+        </button>
+    </nav>
+
+    <div class="header-title">
+        <h1>Painel <span>Administrativo</span> </h1>
+        <p style="opacity: 0.8; margin-top: 8px; font-size: 1rem;">Escolha como deseja continuar:</p>
+    </div>
 
     <div class="container">
-        <h1>Bem-vindo, <span id="displayName">...</span></h1>
-        <div id="btnInstall" style="display:none; cursor:pointer;">Instalar App</div>
-        <button id="btnSair">Sair</button>
+        <a href="admin_painel.html" class="card">
+            <span class="icon"><i class="fas fa-truck-moving"></i></span>
+            <h2>TRANSBORDO</h2>
+            <p>Acessar Sistema</p>
+        </a>
+
+        <a href="pagina.html" class="card">
+            <span class="icon"><i class="fas fa-tools"></i></span>
+            <h2>PULMÃO DE PEÇAS</h2>
+            <p>Acessar Sistema</p>
+        </a>
     </div>
+
+    <button id="btnInstall">
+        <i class="fas fa-mobile-alt"></i> INSTALAR APLICATIVO
+    </button>
+
+    <footer class="footer-credits">
+        <p>&copy; 2026 Móveis Simonetti - Developed by DB</p>
+    </footer>
 
     <script type="module" src="js/portal.js"></script>
 </body>
