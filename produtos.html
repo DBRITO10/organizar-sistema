@@ -9,11 +9,33 @@
 </head>
 <body>
 
-  <div class="content">
+<nav class="top-nav">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <a href="pagina.html" style="color: white; text-decoration: none; margin-right: 15px; font-size: 1.1rem;">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+      <i class="fas fa-boxes fa-lg"></i>
+      <span style="font-weight:bold; letter-spacing:1px;">ESTOQUE 600</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:20px;">
+      <div id="userDisplay" style="font-size:0.9rem;"></div>
+      <button onclick="window.logout()" class="btn-action" style="background:var(--danger)">SAIR</button>
+    </div>
+</nav>
+
+<div class="container">
     <div class="glass-panel">
-        <h2>Cadastro de Produtos</h2>
-        <div class="form-grid">
-            </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h2 style="margin:0; color:var(--primary); font-size:1.4rem;">Cadastro de Volumes</h2>
+        <button id="btnAbrirModalProd" onclick="window.modalNovoProduto()" class="btn-action" style="background:var(--success); display:none;">+ NOVO PRODUTO</button>
+      </div>
+      
+      <div class="filter-grid">
+        <select id="filtroForn" onchange="window.filtrar()"><option value="">Fornecedor...</option></select>
+        <input type="text" id="filtroCod" placeholder="SKU / Código" onkeyup="window.filtrar()">
+        <input type="text" id="filtroDesc" placeholder="Descrição" onkeyup="window.filtrar()">
+        <button onclick="window.limparFiltros()" class="btn-action" style="background:var(--gray)"><i class="fas fa-sync"></i></button>
+      </div>
     </div>
 
     <div class="glass-panel table-responsive" style="padding: 0;">
@@ -31,19 +53,19 @@
         <tbody id="tblEstoque"></tbody>
       </table>
     </div>
-  </div>
+</div>
 
-  <div id="modalMaster" class="modal">
+<div id="modalMaster" class="modal">
     <div class="modal-content">
       <h3 id="modalTitle" style="margin-top: 0; color: var(--primary);">Título</h3>
       <div id="modalBody"></div>
       <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
         <button onclick="window.fecharModal()" class="btn-action" style="background:#eee; color:#333;">FECHAR</button>
-        <button id="btnModalConfirm" class="btn-action" style="background:var(--primary); color:white;">CONFIRMAR</button>
+        <button id="btnModalConfirm" class="btn-action" style="background:var(--primary);">CONFIRMAR</button>
       </div>
     </div>
-  </div>
+</div>
 
-  <script type="module" src="js/produtos.js"></script>
+<script type="module" src="js/produtos.js"></script>
 </body>
 </html>
