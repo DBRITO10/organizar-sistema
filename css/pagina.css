@@ -17,6 +17,7 @@ body {
     overflow-x: hidden;
 }
 
+/* Barra Superior */
 .top-bar {
     display: flex;
     justify-content: space-between;
@@ -41,7 +42,12 @@ body {
 .logo-area i { font-size: 1.4rem; color: var(--primary); }
 .logo-area h1 { margin: 0; font-size: 1rem; color: var(--text-dark); text-transform: uppercase; }
 
-.user-controls { display: flex; align-items: center; gap: 10px; }
+/* Contêiner do Usuário e Logout */
+.user-container {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espaço entre o badge e o botão */
+}
 
 .user-badge {
     background: #eee;
@@ -52,18 +58,26 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    white-space: nowrap;
 }
 
 .btn-logout {
     background: var(--primary);
     color: white;
     border: none;
-    padding: 6px 12px;
+    padding: 6px 14px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.3s;
 }
 
+.btn-logout:hover { filter: brightness(1.1); }
+
+/* Conteúdo Principal */
 .welcome-section { text-align: center; margin: 40px auto 30px auto; }
 .welcome-section h2 { font-size: 1.6rem; color: var(--text-dark); margin: 0; }
 .welcome-section p { color: var(--gray-text); font-size: 1rem; margin-top: 5px; }
