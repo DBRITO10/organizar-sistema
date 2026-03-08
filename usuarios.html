@@ -7,21 +7,36 @@
     <link rel="stylesheet" href="css/usuarios.css">
 </head>
 <body>
-
     <div class="container">
-        <h2 style="color: var(--primary);">Gestão de Equipe</h2>
-        <div id="listaUsuarios" class="glass-card">
-            </div>
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <a href="pagina.html" style="color:black; text-decoration: none; font-size: 14px;"><i class="fas fa-chevron-left"></i> VOLTAR</a>
+            <h2 style="margin:0; font-weight: 300; letter-spacing: 1px; color: #333333;">Gestão de Acessos</h2>
+            <button onclick="window.sairImediato()" style="background:none; border:none; color:#c62828; cursor:pointer; font-size: 18px;">
+                <i class="fas fa-power-off"></i>
+            </button>
+        </div>
+
+        <div class="glass-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>COLABORADOR</th>
+                        <th>NÍVEL</th>
+                        <th style="text-align: right;">AJUSTES</th>
+                    </tr>
+                </thead>
+                <tbody id="listaUsuarios"></tbody>
+            </table>
+        </div>
     </div>
 
     <div id="modalNome" class="modal">
         <div class="modal-content">
-            <h3>Editar Nome</h3>
-            <input type="text" id="inputNome" placeholder="Novo nome...">
-            <div style="margin-top: 15px; display: flex; gap: 10px;">
-                <button onclick="window.fecharModal()" class="btn-secundario">Cancelar</button>
-                <button id="btnSalvarNome" class="btn-primario">Salvar</button>
-            </div>
+            <h3 style="margin:0; color: #d32f2f;">Alterar Nome</h3>
+            <p id="subTitleModal" style="font-size: 12px; color: #666; margin-top: 5px;">Digite o novo nome de exibição</p>
+            <input type="text" id="inputNome">
+            <button class="btn-confirm" id="btnSalvarNome">ATUALIZAR NOME</button>
+            <button onclick="fecharModal()" style="background:none; border:none; margin-top:15px; color:#999; cursor:pointer; font-size: 13px;">Cancelar</button>
         </div>
     </div>
 
