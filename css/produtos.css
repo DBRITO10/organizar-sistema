@@ -1,75 +1,77 @@
-:root {
-    --primary: #d32f2f;
-    --bg-body: #fdf2f2;
-    --bg-card: #ffffff;
-    --text-dark: #333333;
-    --border: #f0d8d8;
-    --info: #0288d1;
-    --warning: #f57c00;
-    --danger: #c62828;
-    --success: #388e3c;
-    --gray: #757575;
-}
+    :root {
+        --primary: #d32f2f;
+        --bg-body: #fdf2f2;      /* ALTERADO: Tom rosado bem suave */
+        --bg-card: #ffffff;
+        --text-dark: #333333;
+        --border: #f0d8d8;       /* DICA: Deixe a borda levemente rosada também */
+    
+        /* Adicione estas linhas abaixo: */
+        --info: #0288d1;    /* Azul para Criar SKU */
+        --warning: #f57c00; /* Laranja para Editar */
+        --danger: #c62828;  /* Vermelho para Excluir */
+        --success: #388e3c; /* Verde para Entrada */
+        --gray: #757575;    /* Cinza para Limpar */
+    }
 
-body { 
-    background-color: var(--bg-body); 
-    margin: 0; 
-    font-family: 'Segoe UI', sans-serif; 
-    color: var(--text-dark); 
-    min-height: 100vh; 
-}
+    body { 
+        background-color: var(--bg-body); 
+        margin: 0; 
+        font-family: 'Segoe UI', sans-serif; 
+        color: var(--text-dark); 
+        min-height: 100vh; 
+    }
 
-/* Barra Superior */
-.top-nav { 
-    background: var(--primary); 
-    padding: 15px 20px; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    color: white;
-}
+    /* Barra Superior */
+    .top-nav { 
+        background: var(--primary); 
+        padding: 15px 20px; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        color: white;
+    }
 
-.container { padding: 20px; max-width: 1200px; margin: auto; }
+    .container { padding: 20px; max-width: 1200px; margin: auto; }
 
-/* Painéis */
-.glass-panel { 
-    background: var(--bg-card); 
-    border-radius: 8px; 
-    padding: 20px; 
-    border: 1px solid var(--border); 
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-    margin-bottom: 20px; 
-}
+    /* Painéis */
+    .glass-panel { 
+        background: var(--bg-card); 
+        border-radius: 8px; 
+        padding: 20px; 
+        border: 1px solid var(--border); 
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+        margin-bottom: 20px; 
+    }
 
-.filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; align-items: flex-end; }
-.filter-group { display: flex; flex-direction: column; gap: 5px; }
-.filter-group label { font-size: 0.75rem; font-weight: bold; color: var(--primary); text-transform: uppercase; }
+    .filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; align-items: flex-end; }
+    .filter-group { display: flex; flex-direction: column; gap: 5px; }
+    .filter-group label { font-size: 0.75rem; font-weight: bold; color: var(--primary); text-transform: uppercase; }
+    
+    input, select { padding: 10px; border: 1px solid var(--border); border-radius: 4px; outline: none; }
+    
+    /* Tabela */
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th { background: #d32f2f; padding: 12px; text-align: left; font-size: 0.85rem; color: #ffffff; border-bottom: 2px solid var(--border); }
+    td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    
+    .child-row { background: #f9f9f9; display: none; }
+    .child-row.active { display: table-row; }
+    
+    .btn-action { 
+        padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; 
+        color: white; font-weight: bold; font-size: 0.75rem; transition: 0.2s; background: var(--primary);
+    }
+    .btn-action:hover { filter: brightness(1.2); }
 
-input, select { padding: 10px; border: 1px solid var(--border); border-radius: 4px; outline: none; }
+    /* Modal */
+    .modal { 
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; 
+    }
+    .modal-content { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 450px; }
+    .modal-content input, .modal-content select { width: 100%; margin-bottom: 15px; box-sizing: border-box; }
 
-/* Tabela */
-table { width: 100%; border-collapse: collapse; background: white; }
-th { background: #d32f2f; padding: 12px; text-align: left; font-size: 0.85rem; color: #ffffff; border-bottom: 2px solid var(--border); }
-td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-
-.child-row { background: #f9f9f9; display: none; }
-.child-row.active { display: table-row; }
-
-.btn-action { 
-    padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; 
-    color: white; font-weight: bold; font-size: 0.75rem; transition: 0.2s; background: var(--primary);
-}
-.btn-action:hover { filter: brightness(1.2); }
-
-/* Modal */
-.modal { 
-    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-    background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; 
-}
-.modal-content { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 450px; }
-.modal-content input, .modal-content select { width: 100%; margin-bottom: 15px; box-sizing: border-box; }
-
-@media (max-width: 768px) {
-    .table-responsive { overflow-x: auto !important; }
-    table { min-width: 800px; }
-}
+    @media (max-width: 768px) {
+        .table-responsive { overflow-x: auto !important; }
+        table { min-width: 800px; }
+    }
