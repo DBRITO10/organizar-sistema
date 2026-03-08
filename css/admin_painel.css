@@ -13,7 +13,7 @@ body {
     font-family: 'Segoe UI', Roboto, sans-serif; 
     background-color: var(--secondary); 
     margin: 0; 
-    padding-top: 80px; 
+    padding-top: 100px; 
     min-height: 100vh; /* Altura mínima da tela inteira */
     color: var(--text-dark);
     display: flex;         /* Habilita o Flexbox */
