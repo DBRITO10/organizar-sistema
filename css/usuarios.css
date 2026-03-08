@@ -1,10 +1,9 @@
-/* PALETA MODERNA: VERMELHO, BRANCO E CINZA */
 :root {
-    --primary: #d32f2f;      /* Vermelho destaque */
-    --bg-body: #f5f5f5;     /* Fundo bem claro */
-    --bg-card: #ffffff;     /* Fundo dos cartões */
-    --text-dark: #333333;   /* Texto legível */
-    --border: #e0e0e0;      /* Linhas finas */
+    --primary: #d32f2f;
+    --bg-body: #f5f5f5;
+    --bg-card: #ffffff;
+    --text-dark: #333333;
+    --border: #e0e0e0;
 }
 
 body { 
@@ -17,18 +16,31 @@ body {
 
 .container { max-width: 900px; margin: 40px auto; padding: 20px; }
 
-/* Cartão limpo */
 .glass-card { 
     background: var(--bg-card); 
     border-radius: 12px; 
     padding: 25px; 
     border: 1px solid var(--border); 
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
 }
 
-.btn-primario { background: var(--primary); color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; }
-.btn-secundario { background: #eee; color: #333; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th { text-align: left; padding: 15px; border-bottom: 2px solid var(--border); font-size: 13px; color: #777; text-transform: uppercase; }
+td { padding: 15px; border-bottom: 1px solid var(--border); color: var(--text-dark); }
 
-/* Modal */
-.modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
-.modal-content { background: white; padding: 20px; border-radius: 8px; width: 300px; }
+.badge { padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; color: white; }
+.leitor { background: #9e9e9e; }
+.operador { background: #fbc02d; color: #000; }
+.admin { background: var(--primary); }
+
+.btn-group { display: flex; gap: 8px; justify-content: flex-end; }
+.btn-action { border: none; color: white; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+.btn-edit { background: #555; }
+.btn-up { background: #2e7d32; }
+.btn-down { background: #ef6c00; }
+.btn-action:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+.modal-content { background: white; color: var(--text-dark); padding: 30px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+.modal-content input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid var(--border); border-radius: 6px; font-size: 16px; }
+.btn-confirm { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
