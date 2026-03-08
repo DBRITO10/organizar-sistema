@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagina - Móveis Simonetti</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/pagina.css">
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="logo-area">
+            <a href="portal.html" class="btn-back-portal" title="Voltar ao Portal">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <i class="fas fa-warehouse"></i>
+            <h1>PAGINA INICIAL</h1>
+        </div>
+        
+        <div class="user-controls">
+            <div class="user-badge" id="userBadge">
+                <i class="fas fa-user-circle"></i>
+                <span id="userDisplay">...</span>
+            </div>
+            <button class="btn-logout" id="btnLogout" title="Sair do sistema">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="welcome-section">
+        <h2>PULMÃO DE PEÇAS</h2>
+        <p>Selecione o módulo que deseja acessar.</p>
+    </div>
+
+    <main class="main-container">
+        <div class="cards-grid">
+            <a href="estoque.html" class="card" id="cardEstoque">
+                <i class="fas fa-boxes-stacked"></i>
+                <h3>MOVIMENTAÇÃO</h3>
+                <p>Visualização de endereços e volumes.</p>
+                <div class="card-action">Acessar</div>
+            </a>
+
+            <a href="produtos.html" class="card" id="cardProdutos">
+                <i class="fas fa-tags"></i>
+                <h3>CADASTRO</h3>
+                <p>Entrada e criação de novos SKUs.</p>
+                <div class="card-action">Acessar</div>
+            </a>
+
+            <a href="fornecedores.html" class="card" id="cardFornecedores">
+                <i class="fas fa-truck-ramp-box"></i>
+                <h3>FORNECEDORES</h3>
+                <p>Visualização de Cadastro.</p>
+                <div class="card-action">Acessar</div>
+            </a>
+
+            <a href="historico.html" class="card" id="cardHistorico">
+                <i class="fas fa-history"></i>
+                <h3>HISTÓRICO</h3>
+                <p>Relatório de movimentações.</p>
+                <div class="card-action">Acessar</div>
+            </a>
+
+            <a href="usuarios.html" class="card" id="btnGestao" style="display: none;">
+                <i class="fas fa-users-gear"></i>
+                <h3>GESTÃO DA EQUIPE</h3>
+                <p>Níveis de acesso e permissões.</p>
+                <div class="card-action">Configurar</div>
+            </a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        &copy; 2026 Móveis Simonetti - Developed by DB
+    </footer>
+
+    <script type="module" src="js/pagina.js"></script>
+</body>
+</html>
