@@ -17,7 +17,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Barra Superior */
+/* Barra Superior e Alinhamento */
 .top-bar {
     display: flex;
     justify-content: space-between;
@@ -42,11 +42,11 @@ body {
 .logo-area i { font-size: 1.4rem; color: var(--primary); }
 .logo-area h1 { margin: 0; font-size: 1rem; color: var(--text-dark); text-transform: uppercase; }
 
-/* Contêiner do Usuário e Logout */
+/* Contêiner que alinha o Badge e o Botão lado a lado */
 .user-container {
     display: flex;
     align-items: center;
-    gap: 15px; /* Espaço entre o badge e o botão */
+    gap: 15px;
 }
 
 .user-badge {
@@ -74,7 +74,6 @@ body {
     gap: 6px;
     transition: 0.3s;
 }
-
 .btn-logout:hover { filter: brightness(1.1); }
 
 /* Conteúdo Principal */
@@ -104,8 +103,8 @@ body {
     align-items: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
-
 .card:hover { border-color: var(--primary); transform: translateY(-3px); }
+
 .card i { font-size: 2.2rem; margin-bottom: 12px; color: var(--primary); }
 .card h3 { margin: 5px 0; font-size: 1.1rem; }
 .card p { font-size: 0.8rem; color: var(--gray-text); height: 40px; margin: 5px 0; }
@@ -120,5 +119,7 @@ body {
     font-weight: bold;
     text-transform: uppercase;
 }
+
+.card.locked { opacity: 0.5; cursor: not-allowed; }
 
 .footer { text-align: center; padding: 20px; color: var(--gray-text); font-size: 0.75rem; }
