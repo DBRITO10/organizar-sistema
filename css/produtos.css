@@ -1,0 +1,37 @@
+:root {
+    --primary: #d32f2f;
+    --bg-body: #fdf2f2;
+    --bg-card: #ffffff;
+    --text-dark: #333333;
+    --border: #f0d8d8;
+    --info: #0288d1;
+    --warning: #f57c00;
+    --danger: #c62828;
+    --success: #388e3c;
+    --gray: #757575;
+}
+
+body { 
+    background-color: var(--bg-body); 
+    margin: 0; 
+    font-family: 'Segoe UI', sans-serif; 
+    color: var(--text-dark); 
+    min-height: 100vh;
+}
+
+.glass-panel { 
+    background: var(--bg-card); 
+    padding: 20px; 
+    border-radius: 8px; 
+    margin-bottom: 20px; 
+    border: 1px solid var(--border);
+}
+
+table { width: 100%; border-collapse: collapse; }
+th { background: var(--primary); color: white; padding: 12px; text-transform: uppercase; font-size: 0.8rem; }
+td { padding: 12px; border-bottom: 1px solid var(--border); text-align: center; }
+
+.btn-action { padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; color: white; font-weight: bold; }
+
+.modal { display: none; position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+.modal-content { background: white; padding: 25px; border-radius: 8px; width: 400px; }
