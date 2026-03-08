@@ -1,0 +1,53 @@
+:root { 
+    --primary: #d32f2f;
+    --secondary: #fdf2f2;
+    --accent: #d32f2f;
+    --success: #2e7d32;
+    --excel: #1d6f42;        
+    --pdf: #c62828;          
+    --text-dark: #333333;
+    --text-light: #666666;
+    --white: #ffffff;
+    --border-color: #f0d8d8;
+}
+
+body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--secondary); margin: 0; padding-top: 80px; padding-bottom: 40px; color: var(--text-dark); min-height: 100vh; }
+
+.top-nav { background: var(--white); color: var(--text-dark); padding: 0 20px; height: 65px; display: flex; justify-content: space-between; align-items: center; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.nav-left { flex: 1; font-size: 0.85rem; display: flex; align-items: center; gap: 10px; color: var(--text-light); }
+.nav-center { flex: 2; text-align: center; font-weight: bold; letter-spacing: 0.5px; font-size: 1.1rem; color: var(--text-dark); }
+.nav-right { flex: 1; text-align: right; }
+
+.btn-voltar { color: var(--primary); text-decoration: none; font-size: 1.2rem; transition: 0.3s; font-weight: bold; }
+.btn-voltar:hover { opacity: 0.7; }
+.btn-sair { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.8rem; background: #feeceb; padding: 6px 15px; border-radius: 20px; border: 1px solid #f8d7da; transition: 0.3s; }
+.btn-sair:hover { background: var(--primary); color: white; }
+
+.container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 25px; }
+.card-resumo { background: var(--white); padding: 20px; border-radius: 12px; border-left: 5px solid var(--primary); border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.03); }
+.card-resumo small { color: var(--text-light); font-size: 0.7rem; text-transform: uppercase; font-weight: bold; }
+.card-resumo h2 { margin: 5px 0 0; color: var(--text-dark); font-size: 1.5rem; font-weight: 800; }
+
+.search-container { background: var(--white); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid var(--border-color); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.search-box { flex: 2; min-width: 200px; }
+.filter-box { flex: 1; min-width: 150px; }
+
+input, select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; outline: none; background: var(--secondary); color: var(--text-dark); transition: 0.3s; }
+input:focus, select:focus { border-color: var(--primary); background: var(--white); }
+
+.btn-export { border: none; padding: 11px 18px; border-radius: 8px; color: white; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; transition: 0.2s; }
+.btn-excel { background: var(--excel); }
+.btn-pdf { background: var(--pdf); }
+.btn-export:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.grid-produtos { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.card-produto { background: var(--white); border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; box-shadow: 0 3px 5px rgba(0,0,0,0.02); }
+.card-produto:hover { transform: translateY(-4px); border-color: var(--primary); }
+.badge-forn { color: var(--primary); font-weight: 700; text-transform: uppercase; font-size: 0.75rem; margin-bottom: 8px; display: block; }
+.container-valores { margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.info-valor { padding: 10px; background: var(--secondary); border-radius: 8px; font-weight: bold; font-size: 0.9rem; text-align: center; border: 1px solid var(--border-color); }
+.info-total { background: #feeceb; border: 1px solid #f8d7da; color: var(--primary); }
+
+@media (max-width: 600px) { .nav-left span { display: none; } .grid-produtos { grid-template-columns: 1fr; } }
