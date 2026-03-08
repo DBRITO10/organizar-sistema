@@ -7,11 +7,7 @@
     --border-color: #f0d8d8;
 }
 
-* { 
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box; 
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -24,48 +20,86 @@ body {
     padding: 20px;
 }
 
-.container {
-    background: var(--white);
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    text-align: center;
-    border: 1px solid var(--border-color);
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    max-width: 400px;
-}
-
-h1 {
-    color: var(--primary);
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-}
-
-#btnInstall {
-    background-color: var(--primary);
-    color: var(--white);
     padding: 12px 20px;
-    border-radius: 6px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    transition: background 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--white);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    z-index: 1000;
 }
 
-#btnInstall:hover {
-    background-color: #b71c1c;
-}
+.user-info { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 500; color: var(--text-dark); }
+.user-info i { color: var(--primary); font-size: 1.1rem; }
 
-#btnSair {
-    background-color: transparent;
-    color: var(--text-dark);
-    border: 1px solid var(--border-color);
-    padding: 10px 20px;
+.logout-btn {
+    background: transparent;
+    color: #d32f2f;
+    border: 1.5px solid #d32f2f;
+    padding: 6px 18px;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.3s;
+    font-weight: 600;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-#btnSair:hover {
-    background-color: var(--border-color);
+.logout-btn:hover { background: #d32f2f; color: white; }
+
+.header-title { margin: 80px 0 40px; text-align: center; }
+.header-title h1 { color: var(--text-dark); font-size: 2.8rem; letter-spacing: -1px; }
+.header-title span { color: var(--primary); }
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    width: 100%;
+    max-width: 900px;
+    margin-top: 10px;
+}
+
+.card {
+    padding: 50px 20px;
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-dark);
+    transition: 0.3s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 8px 15px rgba(211, 47, 47, 0.1); }
+.card .icon { font-size: 35px; margin-bottom: 15px; color: var(--primary); }
+.card h2 { font-size: 1.3rem; margin-bottom: 5px; }
+.card p { font-size: 0.9rem; opacity: 0.7; }
+
+#btnInstall {
+    display: none;
+    margin-top: 30px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.footer-credits { margin-top: auto; padding: 20px; color: #999; font-size: 0.75rem; }
+
+@media (max-width: 600px) { 
+    .header-title h1 { font-size: 2rem; }
+    .header-title { margin-top: 70px; }
+    .container { grid-template-columns: 1fr; }
 }
