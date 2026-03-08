@@ -1,0 +1,71 @@
+:root {
+    --primary: #d32f2f;
+    --secondary: #fdf2f2;
+    --accent: #d32f2f;
+    --text-dark: #333333;
+    --white: #ffffff;
+    --border-color: #f0d8d8;
+}
+
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--secondary);
+    color: var(--text-dark);
+    padding: 20px;
+}
+
+.container {
+    background: var(--white);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    border: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 400px;
+}
+
+h1 {
+    color: var(--primary);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+#btnInstall {
+    background-color: var(--primary);
+    color: var(--white);
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    transition: background 0.3s;
+}
+
+#btnInstall:hover {
+    background-color: #b71c1c;
+}
+
+#btnSair {
+    background-color: transparent;
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+#btnSair:hover {
+    background-color: var(--border-color);
+}
