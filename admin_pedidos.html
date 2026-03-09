@@ -8,16 +8,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/admin_pedidos.css">
 </head>
 <body>
 
 <nav class="top-nav" style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+    
     <div class="nav-esquerda" style="display: flex; align-items: center; gap: 15px;">
         <a href="admin_painel.html" class="btn-voltar" style="font-size: 1.2rem; text-decoration: none; color: var(--primary);">
             <i class="fas fa-arrow-left"></i>
         </a>
+        
         <div style="line-height: 1.1;">
             <div style="font-size: 0.9rem; font-weight: bold;">
                 <i class="fas fa-user-shield" style="color:var(--accent)"></i> <span id="nomeAdmin">...</span>
@@ -25,9 +26,11 @@
             <small style="font-size: 0.7rem; color: var(--text-light);">Assistência MS</small>
         </div>
     </div>
+
     <div class="nav-direita">
         <a href="#" id="btnLogout" class="btn-sair">SAIR <i class="fas fa-sign-out-alt"></i></a>
     </div>
+
 </nav>
 
 <div class="container">
