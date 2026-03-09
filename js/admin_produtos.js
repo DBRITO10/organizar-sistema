@@ -1,4 +1,4 @@
-    import { db, auth } from "./firebase-config.js";
+    import { db, auth } from "./js/firebase-config.js";
     import { collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
@@ -105,3 +105,5 @@
     function limparCampos() {
         ["f","c","d","v","q"].forEach(id => document.getElementById(id).value = (id === "q" ? "0" : ""));
     }
+
+    document.getElementById("btnLogout").onclick = () => signOut(auth).then(() => window.location.href = "index.html");
