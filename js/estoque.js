@@ -170,9 +170,9 @@ window.abrirDetalhesEndereco = (endId) => {
 
 window.abrirModalNovoEnd = () => {
     openModalBase("Cadastrar Novo Endereço", `
-        <label>Rua (Ex: PRT):</label>
+        <label>Endereço (Ex: PRT):</label>
         <input type="text" id="nRua" style="width:100%; text-transform:uppercase;">
-        <label>Módulo (Ex: 1):</label>
+        <label>Pinking (Ex: 1):</label>
         <input type="number" id="nModulo" style="width:100%;">
     `, async () => {
         const rua = document.getElementById("nRua").value.trim().toUpperCase();
