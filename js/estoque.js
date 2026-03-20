@@ -117,7 +117,7 @@ function renderizarTudo() {
 
             card.innerHTML = `
                 <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; padding: 10px;">
-                    <span>Endereço ${end.rua} - Pinking ${end.modulo}</span>
+                    <span>Endereço ${end.rua} - Picking ${end.modulo}</span>
                     ${userRole === 'admin' ? `<i class="fas fa-trash" onclick="event.stopPropagation(); window.deletarLocal('${end.id}')" style="cursor:pointer; opacity:0.8;"></i>` : ''}
                 </div>
                 <div style="padding: 20px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center;">
@@ -172,7 +172,7 @@ window.abrirModalNovoEnd = () => {
     openModalBase("Cadastrar Novo Endereço", `
         <label>Endereço (Ex: PRT):</label>
         <input type="text" id="nRua" style="width:100%; text-transform:uppercase;">
-        <label>Pinking (Ex: 1):</label>
+        <label>Picking (Ex: 1):</label>
         <input type="number" id="nModulo" style="width:100%;">
     `, async () => {
         const rua = document.getElementById("nRua").value.trim().toUpperCase();
