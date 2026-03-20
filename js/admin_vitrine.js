@@ -93,33 +93,62 @@ function renderizar(lista) {
     }).join('');
 }
 
-window.exportarExcel = () => {
-    if(listaFiltradaAtual.length === 0) return alert("Não há dados para exportar.");
-    const dadosExcel = listaFiltradaAtual.map(p => ({
-        "FORNECEDOR": p.fornecedor, "CÓDIGO": p.codigo, "DESCRIÇÃO": p.desc, "QTD": parseInt(p.qtd || 0), "VALOR UNIT.": parseFloat(p.valor || 0), "VALOR TOTAL": parseFloat(p.valor || 0) * parseInt(p.qtd || 0)
-    }));
-    const ws = XLSX.utils.json_to_sheet(dadosExcel);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Estoque");
-    XLSX.writeFile(wb, `Estoque_600_${new Date().toLocaleDateString().replace(/\//g,'-')}.xlsx`);
-};
+    window.exportarExcel = () => {
+        if(listaFiltradaAtual.length === 0) return alert("Não há dados para exportar.");
+        const dadosExcel = listaFiltradaAtual.map(p => ({
+            "FORNECEDOR": p.fornecedor,
+            "CÓDIGO": p.codigo,
+            "DESCRIÇÃO": p.desc,
+            "QTD": parseInt(p.qtd || 0),
+            "VALOR UNIT.": parseFloat(p.valor || 0),
+            "VALOR TOTAL": parseFloat(p.valor || 0) * parseInt(p.qtd || 0)
+        }));
+        const ws = XLSX.utils.json_to_sheet(dadosExcel);
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        for (let R = range.s.r + 1; R <= range.e.r; ++R) {
+            const colUnit = XLSX.utils.encode_cell({r: R, c: 4});
+            const colTotal = XLSX.utils.encode_cell({r: R, c: 5});
+            if(ws[colUnit]) ws[colUnit].z = 'R$ #,##0.00';
+            if(ws[colTotal]) ws[colTotal].z = 'R$ #,##0.00';
+        }
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Estoque");
+        XLSX.writeFile(wb, `Estoque_600_${new Date().toLocaleDateString().replace(/\//g,'-')}.xlsx`);
+    };
 
-window.exportarPDF = () => {
-    if(listaFiltradaAtual.length === 0) return alert("Não há dados para exportar.");
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('l', 'mm', 'a4');
-    const rows = [];
-    let totalGeral = 0;
-    listaFiltradaAtual.forEach(p => {
-        const total = parseFloat(p.valor || 0) * parseInt(p.qtd || 0);
-        totalGeral += total;
-        rows.push([p.fornecedor, p.codigo, p.desc, p.qtd, `R$ ${parseFloat(p.valor || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`, `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`]);
-    });
-    doc.autoTable({
-        startY: 28, head: [['FORNECEDOR', 'CÓDIGO', 'DESCRIÇÃO', 'QTD', 'V. UNITÁRIO', 'V. TOTAL']], body: rows,
-        foot: [[{content: 'VALOR TOTAL GERAL:', colSpan: 5, styles: {halign: 'right', fontStyle: 'bold'}}, {content: `R$ ${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`, styles: {fontStyle: 'bold'}}]]
-    });
-    doc.save(`Estoque_Transbordo.pdf`);
-};
+    window.exportarPDF = () => {
+        if(listaFiltradaAtual.length === 0) return alert("Não há dados para exportar.");
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('l', 'mm', 'a4');
+        const dataHj = new Date().toLocaleString();
+        doc.setTextColor(211, 47, 47); // Alterado para o vermelho Simonetti
+        doc.setFontSize(26);
+        doc.setFont("helvetica", "bold");
+        doc.text("MS", 12, 18);
+        doc.setTextColor(40);
+        doc.setFontSize(16);
+        doc.text("Estoque 600 - Transbordo", 35, 14);
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Relatório gerado em: ${dataHj}`, 35, 20);
+        const rows = [];
+        let totalGeral = 0;
+        listaFiltradaAtual.forEach(p => {
+            const total = parseFloat(p.valor || 0) * parseInt(p.qtd || 0);
+            totalGeral += total;
+            rows.push([p.fornecedor, p.codigo, p.desc, p.qtd, `R$ ${parseFloat(p.valor || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`, `R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`]);
+        });
+        doc.autoTable({
+            startY: 28,
+            head: [['FORNECEDOR', 'CÓDIGO', 'DESCRIÇÃO', 'QTD', 'V. UNITÁRIO', 'V. TOTAL']],
+            body: rows,
+            theme: 'grid',
+            headStyles: { fillColor: [211, 47, 47], textColor: 255 },
+            styles: { fontSize: 8 },
+            foot: [[{content: 'VALOR TOTAL GERAL:', colSpan: 5, styles: {halign: 'right', fontStyle: 'bold'}}, {content: `R$ ${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`, styles: {fontStyle: 'bold'}}]],
+            footStyles: { fillColor: [211, 47, 47], textColor: 255 }
+        });
+        doc.save(`Estoque_Transbordo.pdf`);
+    };
 
-document.getElementById("btnLogout").onclick = () => confirm("Sair do sistema?") && signOut(auth).then(() => window.location.href = "index.html");
+    document.getElementById("btnLogout").onclick = () => confirm("Sair do sistema?") && signOut(auth).then(() => window.location.href = "index.html");
