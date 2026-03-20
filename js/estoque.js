@@ -117,7 +117,7 @@ function renderizarTudo() {
 
             card.innerHTML = `
                 <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; padding: 10px;">
-                    <span>ENDEREÇO ${end.rua} - Pinking ${end.modulo}</span>
+                    <span>Endereço ${end.rua} - Pinking ${end.modulo}</span>
                     ${userRole === 'admin' ? `<i class="fas fa-trash" onclick="event.stopPropagation(); window.deletarLocal('${end.id}')" style="cursor:pointer; opacity:0.8;"></i>` : ''}
                 </div>
                 <div style="padding: 20px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center;">
