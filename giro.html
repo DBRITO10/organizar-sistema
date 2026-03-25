@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Giro de Estoque - Gestão</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/produtos.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <nav class="top-nav">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <a href="pagina.html" style="color: white;"><i class="fas fa-arrow-left"></i></a>
+            <span style="font-weight:bold;">RANKING DE GIRO</span>
+        </div>
+        <button id="btnExportarGiro" class="btn-action" style="background:var(--success)">BAIXAR EXCEL</button>
+    </nav>
+
+    <div class="container">
+        <div class="glass-panel">
+            <h4>Saídas por Fornecedor (Pulmão)</h4>
+            <table id="tblGiro">
+                <thead>
+                    <tr>
+                        <th>FORNECEDOR</th>
+                        <th>TOTAL DE SAÍDAS</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoGiro"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db } from "./js/firebase-config.js";
+        import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        async function carregarGiro() {
+            const q = query(collection(db, "movimentacoes"), where("tipo", "==", "Saída"));
+            const snap = await getDocs(q);
+            const resumo = {};
+
+            snap.forEach(doc => {
+                const d = doc.data();
+                const forn = d.fornecedor || "Não Informado";
+                resumo[forn] = (resumo[forn] || 0) + (Number(d.quantidade) || 0);
+            });
+
+            const dadosSorted = Object.entries(resumo).sort((a,b) => b[1] - a[1]);
+            document.getElementById("corpoGiro").innerHTML = dadosSorted.map(item => `
+                <tr><td>${item[0]}</td><td><strong>${item[1]} unidades</strong></td></tr>
+            `).join('');
+        }
+        carregarGiro();
+
+        document.getElementById("btnExportarGiro").onclick = () => {
+            const ws = XLSX.utils.table_to_sheet(document.getElementById("tblGiro"));
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Giro de Estoque");
+            XLSX.writeFile(wb, "Relatorio_Giro_Simonetti.xlsx");
+        };
+    </script>
+</body>
+</html>
