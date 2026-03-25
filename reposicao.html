@@ -2,36 +2,51 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Reposição de Peças</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Alertas - Móveis Simonetti</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/produtos.css">
     <style>
-        .alerta-vermelho { background-color: #ffcccc !important; color: #b71c1c; font-weight: bold; }
-        .input-minimo { width: 60px; padding: 5px; border: 1px solid #ccc; border-radius: 4px; }
+        .alerta-vermelho { background-color: #ffebee !important; color: #b71c1c; font-weight: bold; border-left: 4px solid #b71c1c; }
+        .input-alerta { width: 70px; padding: 5px; border: 1px solid #ccc; border-radius: 4px; text-align: center; }
+        .btn-save-alerta { background: #2e7d32; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; margin-left: 5px; }
+        .btn-save-alerta:hover { background: #1b5e20; }
+        .search-container { margin-bottom: 20px; display: flex; gap: 10px; }
+        .input-busca { flex-grow: 1; padding: 12px; border: 1px solid var(--border); border-radius: 8px; outline: none; }
+        .user-info { display: flex; align-items: center; gap: 15px; font-size: 0.9rem; }
+        td small { display: block; color: #666; font-size: 0.75rem; }
     </style>
 </head>
 <body>
+
     <nav class="top-nav">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <a href="pagina.html" style="color: white;"><i class="fas fa-arrow-left"></i></a>
-            <span style="font-weight:bold;">ALERTAS DE ESTOQUE BAIXO</span>
+        <div style="display:flex; align-items:center; gap:15px;">
+            <a href="pagina.html" style="color: white; text-decoration: none;"><i class="fas fa-arrow-left"></i></a>
+            <span style="font-weight:bold; letter-spacing:1px;">PAINEL DE REPOSIÇÃO</span>
+        </div>
+        
+        <div class="user-info">
+            <div id="userDisplay"><i class="fas fa-user-circle"></i> Carregando...</div>
+            <button id="btnLogout" class="btn-action" style="background:var(--danger); padding: 5px 12px;">SAIR</button>
         </div>
     </nav>
 
     <div class="container">
-        <div class="glass-panel" style="margin-bottom:15px;">
-            <label>Definir Alerta Geral (unidades): </label>
-            <input type="number" id="minimoGeral" value="5" class="input-minimo" oninput="renderizar()">
-            <small style="margin-left:10px; color: #666;">(Itens abaixo deste valor ficam vermelhos e sobem no topo)</small>
+        <div class="glass-panel search-container">
+            <i class="fas fa-search" style="align-self: center; color: var(--primary);"></i>
+            <input type="text" id="inputBusca" class="input-busca" placeholder="Buscar por Fornecedor, Produto, SKU ou Volume..." oninput="filtrarTabela()">
         </div>
 
-        <div class="glass-panel" style="padding:0">
+        <div class="glass-panel" style="padding:0; overflow-x: auto;">
             <table id="tblReposicao">
                 <thead>
                     <tr>
+                        <th>FORNECEDOR</th>
+                        <th>PRODUTO (Mestre)</th>
                         <th>DESCRIÇÃO DO VOLUME</th>
-                        <th>SKU</th>
+                        <th>CÓD. VOLUME</th>
                         <th>QTD ATUAL</th>
+                        <th>ALERTA (Min)</th>
                         <th>STATUS</th>
                     </tr>
                 </thead>
@@ -41,43 +56,116 @@
     </div>
 
     <script type="module">
-        import { db } from "./js/firebase-config.js";
-        import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { db, auth } from "./js/firebase-config.js";
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { collection, getDocs, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        let todosVolumes = [];
+        let todosDados = [];
 
-        async function buscarDados() {
-            const snap = await getDocs(collection(db, "volumes"));
-            todosVolumes = snap.docs.map(doc => doc.data());
-            window.renderizar();
+        // Verificação de Usuário
+        onAuthStateChanged(auth, async user => {
+            if (user) {
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                const nome = userDoc.exists() ? userDoc.data().nomeCompleto : user.email;
+                document.getElementById("userDisplay").innerHTML = `<i class="fas fa-user-circle"></i> ${nome}`;
+                carregarInformacoes();
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+
+        // Logout
+        document.getElementById("btnLogout").onclick = () => signOut(auth).then(() => window.location.href = "index.html");
+
+        async function carregarInformacoes() {
+            // Pegamos Volumes e Fornecedores para cruzar os nomes
+            const [snapVols, snapForn] = await Promise.all([
+                getDocs(collection(db, "volumes")),
+                getDocs(collection(db, "fornecedores"))
+            ]);
+
+            const fornecedoresMap = {};
+            snapForn.forEach(d => fornecedoresMap[d.id] = d.data().nome);
+
+            todosDados = snapVols.docs.map(d => {
+                const data = d.data();
+                return {
+                    id: d.id,
+                    fornecedor: fornecedoresMap[data.fornecedorId] || "---",
+                    produtoNome: data.descricaoProduto || "---", // Assumindo que você salva o nome do mestre no volume ou cruza
+                    produtoSku: data.codigoProduto || "---",
+                    volDesc: data.descricao || "---",
+                    volCod: data.codigo || "---",
+                    quantidade: Number(data.quantidade) || 0,
+                    estoqueMinimo: Number(data.estoqueMinimo) || 0
+                };
+            });
+
+            renderizar(todosDados);
         }
 
-        window.renderizar = () => {
-            const limite = Number(document.getElementById("minimoGeral").value);
+        window.renderizar = (dados) => {
             const tbody = document.getElementById("corpoReposicao");
-
-            // Ordena para que os que estão abaixo do limite fiquem no topo
-            const ordenados = [...todosVolumes].sort((a, b) => {
-                const aBaixo = (Number(a.quantidade) || 0) <= limite;
-                const bBaixo = (Number(b.quantidade) || 0) <= limite;
-                return bBaixo - aBaixo;
+            
+            // Ordena: Críticos primeiro
+            const ordenados = [...dados].sort((a, b) => {
+                const aCritico = a.quantidade <= a.estoqueMinimo && a.estoqueMinimo > 0;
+                const bCritico = b.quantidade <= b.estoqueMinimo && b.estoqueMinimo > 0;
+                return bCritico - aCritico;
             });
 
             tbody.innerHTML = ordenados.map(v => {
-                const qtd = Number(v.quantidade) || 0;
-                const critico = qtd <= limite;
+                const critico = v.estoqueMinimo > 0 && v.quantidade <= v.estoqueMinimo;
                 return `
                     <tr class="${critico ? 'alerta-vermelho' : ''}">
-                        <td>${v.descricao}</td>
-                        <td>${v.codigo}</td>
-                        <td>${qtd}</td>
+                        <td>${v.fornecedor}</td>
+                        <td><strong>${v.produtoNome}</strong><br><small>SKU: ${v.produtoSku}</small></td>
+                        <td>${v.volDesc}</td>
+                        <td>${v.volCod}</td>
+                        <td style="text-align:center"><strong>${v.quantidade}</strong></td>
+                        <td>
+                            <div style="display:flex; align-items:center;">
+                                <input type="number" id="min-${v.id}" value="${v.estoqueMinimo}" class="input-alerta">
+                                <button onclick="window.salvarAlerta('${v.id}')" class="btn-save-alerta" title="Salvar Alerta">
+                                    <i class="fas fa-save"></i>
+                                </button>
+                            </div>
+                        </td>
                         <td>${critico ? '⚠️ REPOR' : '✅ OK'}</td>
                     </tr>
                 `;
             }).join('');
         };
 
-        buscarDados();
+        window.filtrarTabela = () => {
+            const termo = document.getElementById("inputBusca").value.toLowerCase();
+            const filtrados = todosDados.filter(v => 
+                v.fornecedor.toLowerCase().includes(termo) ||
+                v.produtoNome.toLowerCase().includes(termo) ||
+                v.volDesc.toLowerCase().includes(termo) ||
+                v.volCod.toLowerCase().includes(termo) ||
+                v.produtoSku.toLowerCase().includes(termo)
+            );
+            renderizar(filtrados);
+        };
+
+        window.salvarAlerta = async (id) => {
+            const novoMinimo = Number(document.getElementById(`min-${id}`).value);
+            try {
+                await updateDoc(doc(db, "volumes", id), {
+                    estoqueMinimo: novoMinimo
+                });
+                // Atualiza o cache local para não precisar baixar tudo de novo
+                const index = todosDados.findIndex(item => item.id === id);
+                if(index !== -1) todosDados[index].estoqueMinimo = novoMinimo;
+                
+                alert("Alerta atualizado!");
+                renderizar(todosDados);
+            } catch (e) {
+                console.error(e);
+                alert("Erro ao salvar.");
+            }
+        };
     </script>
 </body>
 </html>
