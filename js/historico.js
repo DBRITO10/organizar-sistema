@@ -3,24 +3,24 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 import { collection, getDocs, query, orderBy, limit, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 let historicoCompleto = [];
-let userRole = "leitor";
 
-// Função para pegar a data atual no fuso de Brasília (YYYY-MM-DD)
 function dataBrasiliaISO() {
     const agora = new Date();
-    // Offset de Brasília é UTC-3
     const dataBr = new Date(agora.getTime() - (3 * 60 * 60 * 1000));
     return dataBr.toISOString().split('T')[0];
 }
 
 onAuthStateChanged(auth, async user => {
     if (user) {
-        document.getElementById("labelUser").innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
+        const labelUser = document.getElementById("labelUser");
+        if(labelUser) labelUser.innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
         
-        // Configura datas padrão (Hoje)
         const hoje = dataBrasiliaISO();
-        document.getElementById("filtroDataInicio").value = hoje;
-        document.getElementById("filtroDataFim").value = hoje;
+        const inputInicio = document.getElementById("filtroDataInicio");
+        const inputFim = document.getElementById("filtroDataFim");
+        
+        if(inputInicio) inputInicio.value = hoje;
+        if(inputFim) inputFim.value = hoje;
         
         carregarDados();
     } else {
@@ -40,19 +40,21 @@ async function carregarDados() {
 }
 
 function filtrarHistorico() {
-    const dataInicio = document.getElementById("filtroDataInicio").value;
-    const dataFim = document.getElementById("filtroDataFim").value;
-    const tipo = document.getElementById("filtroTipo").value;
+    const inputInicio = document.getElementById("filtroDataInicio");
+    const inputFim = document.getElementById("filtroDataFim");
+    const inputTipo = document.getElementById("filtroTipo");
+
+    if (!inputInicio || !inputFim || !inputTipo) return;
+
+    const dataInicio = inputInicio.value;
+    const dataFim = inputFim.value;
+    const tipo = inputTipo.value;
 
     const filtrados = historicoCompleto.filter(item => {
         if (!item.data) return false;
-        
-        // Converte o timestamp do Firestore para YYYY-MM-DD
         const dataItem = item.data.toDate().toISOString().split('T')[0];
-        
         const bateData = (!dataInicio || dataItem >= dataInicio) && (!dataFim || dataItem <= dataFim);
         const bateTipo = (tipo === "Todos" || item.tipo === tipo);
-        
         return bateData && bateTipo;
     });
 
@@ -61,6 +63,7 @@ function filtrarHistorico() {
 
 function renderizarTabela(dados) {
     const tbody = document.getElementById("tabelaHist");
+    if(!tbody) return;
     tbody.innerHTML = dados.map(item => `
         <tr>
             <td>${item.data ? item.data.toDate().toLocaleString('pt-BR') : '---'}</td>
@@ -77,17 +80,26 @@ function renderizarTabela(dados) {
     `).join('');
 }
 
-// Eventos de Filtro
-document.getElementById("filtroDataInicio").addEventListener("change", filtrarHistorico);
-document.getElementById("filtroDataFim").addEventListener("change", filtrarHistorico);
-document.getElementById("filtroTipo").addEventListener("change", filtrarHistorico);
+// Listeners com verificação de existência
+const btnLimpar = document.getElementById("btnLimpar");
+if(btnLimpar) {
+    btnLimpar.onclick = () => {
+        const hoje = dataBrasiliaISO();
+        document.getElementById("filtroDataInicio").value = hoje;
+        document.getElementById("filtroDataFim").value = hoje;
+        document.getElementById("filtroTipo").value = "Todos";
+        filtrarHistorico();
+    };
+}
 
-document.getElementById("btnLimpar").onclick = () => {
-    const hoje = dataBrasiliaISO();
-    document.getElementById("filtroDataInicio").value = hoje;
-    document.getElementById("filtroDataFim").value = hoje;
-    document.getElementById("filtroTipo").value = "Todos";
-    filtrarHistorico();
-};
+const fInicio = document.getElementById("filtroDataInicio");
+if(fInicio) fInicio.addEventListener("change", filtrarHistorico);
 
-document.getElementById("btnLogout").onclick = () => signOut(auth).then(() => window.location.href = "index.html");
+const fFim = document.getElementById("filtroDataFim");
+if(fFim) fFim.addEventListener("change", filtrarHistorico);
+
+const fTipo = document.getElementById("filtroTipo");
+if(fTipo) fTipo.addEventListener("change", filtrarHistorico);
+
+const btnLogout = document.getElementById("btnLogout");
+if(btnLogout) btnLogout.onclick = () => signOut(auth).then(() => window.location.href = "index.html");
