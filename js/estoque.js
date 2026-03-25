@@ -166,13 +166,16 @@ window.abrirDetalhesEndereco = (endId) => {
         ${userRole === 'admin' ? `<button onclick="window.abrirModalEditarEnd('${endId}')" class="btn" style="background:#2980b9; color:white; padding:5px 10px; font-size:12px;" title="Editar Local"><i class="fas fa-edit"></i></button>` : ''}
     `;
 
-    openModalBase(`RUA ${end.rua} - MOD ${end.modulo}`, `
+    // Alteração de Nome RUA -> Endereço e MOD -> Picking
+    openModalBase(`Endereço: ${end.rua} - Picking: ${end.modulo}`, `
         <div style="max-height: 400px; overflow-y: auto;">
             ${htmlVols.length > 0 ? htmlVols : '<div style="text-align:center; padding:15px; color:#999;">Vazio</div>'}
         </div>
     `, () => window.fecharModal(), extraActions);
     
-    document.getElementById("btnModalConfirmar").innerText = "Fechar";
+    // Deixa apenas o botão FECHAR visível neste modal
+    document.getElementById("btnModalVoltar").style.display = "none";
+    document.getElementById("btnModalConfirmar").innerText = "FECHAR";
 };
 
 window.abrirModalNovoEnd = () => {
@@ -184,13 +187,15 @@ window.abrirModalNovoEnd = () => {
     `, async () => {
         const rua = document.getElementById("nRua").value.trim().toUpperCase();
         const mod = document.getElementById("nModulo").value.trim();
-        if(!rua || !mod) return alert("Preencha Rua e Módulo!");
+        if(!rua || !mod) return alert("Preencha Endereço e Picking!");
         try {
             await addDoc(collection(db, "enderecos"), { rua: rua, modulo: mod });
             window.fecharModal();
         } catch(e) { alert("Erro ao salvar endereço"); }
     });
-    document.getElementById("btnModalConfirmar").innerText = "Salvar Local";
+    // Padronização de botões VOLTAR e CONFIRMAR
+    document.getElementById("btnModalVoltar").innerText = "VOLTAR";
+    document.getElementById("btnModalConfirmar").innerText = "CONFIRMAR";
 };
 
 window.abrirModalEditarEnd = (endId) => {
@@ -206,14 +211,16 @@ window.abrirModalEditarEnd = (endId) => {
         if(!novaRua || !novoMod) return alert("Campos obrigatórios!");
         try {
             await updateDoc(doc(db, "enderecos", endId), { rua: novaRua, modulo: novoMod });
-            // Registrar alteração no histórico
             await addDoc(collection(db, "movimentacoes"), {
                 tipo: "Edição de Endereço", produto: "Sistema", quantidade: 0, usuario: usernameDB, data: serverTimestamp(),
-                de: `RUA ${end.rua} MOD ${end.modulo}`, para: `RUA ${novaRua} MOD ${novoMod}`
+                de: `END: ${end.rua} PICK: ${end.modulo}`, para: `END: ${novaRua} PICK: ${novoMod}`
             });
             window.fecharModal();
         } catch(e) { alert("Erro ao editar"); }
     });
+    // Padronização de botões VOLTAR e CONFIRMAR
+    document.getElementById("btnModalVoltar").innerText = "VOLTAR";
+    document.getElementById("btnModalConfirmar").innerText = "CONFIRMAR";
 };
 
 window.abrirModalMover = (volId) => {
@@ -233,10 +240,10 @@ window.abrirModalMover = (volId) => {
         <label>Endereço de Destino:</label>
         <select id="selDestino" style="width:100%;">
             <option value="">-- Selecione o Endereço --</option>
-            ${endsFiltrados.map(e => `<option value="${e.id}">RUA ${e.rua} - MOD ${e.modulo}</option>`).join('')}
+            ${endsFiltrados.map(e => `<option value="${e.id}">Endereço: ${e.rua} - Picking: ${e.modulo}</option>`).join('')}
         </select>
     `, window.confirmarMovimento);
-    document.getElementById("btnModalConfirmar").innerText = "Confirmar Movimento";
+    document.getElementById("btnModalConfirmar").innerText = "CONFIRMAR MOVIMENTO";
 };
 
 window.confirmarMovimento = async () => {
@@ -264,8 +271,8 @@ window.confirmarMovimento = async () => {
 
         await addDoc(collection(db, "movimentacoes"), {
             tipo: "Transferência", produto: vol.descricao, quantidade: qtd, usuario: usernameDB, data: serverTimestamp(),
-            de: endOrigem.modulo ? `RUA ${endOrigem.rua} MOD ${endOrigem.modulo}` : "PENDENTE", 
-            para: `RUA ${endDest.rua} MOD ${endDest.modulo}`
+            de: endOrigem.modulo ? `END: ${endOrigem.rua} PICK: ${endOrigem.modulo}` : "PENDENTE", 
+            para: `END: ${endDest.rua} PICK: ${endDest.modulo}`
         });
 
         await window.fecharModal();
@@ -285,7 +292,7 @@ window.abrirModalSaida = (volId) => {
         <label>Quantidade de Saída:</label>
         <input type="number" id="qtdSaida" value="${vol.quantidade}" min="1" max="${vol.quantidade}" style="width:100%;">
     `, window.confirmarSaida);
-    document.getElementById("btnModalConfirmar").innerText = "Confirmar Saída";
+    document.getElementById("btnModalConfirmar").innerText = "CONFIRMAR SAÍDA";
 };
 
 window.confirmarSaida = async () => {
@@ -323,40 +330,39 @@ window.deletarLocal = async (id) => {
 
 window.exportarPDF = (endId) => {
     const { jsPDF } = window.jspdf;
-    const docPdf = new jsPDF();
+    const docPdf = new jsPDF('l', 'mm', 'a4'); // Paisagem para caber a descrição
     const end = dbState.enderecos.find(e => e.id === endId);
     const vols = dbState.volumes.filter(v => v.enderecoId === endId && v.quantidade > 0);
     const total = vols.reduce((acc, v) => acc + v.quantidade, 0);
 
-    // Cabeçalho
     docPdf.setFontSize(18);
-    docPdf.setTextColor(211, 47, 47); // Primary color
+    docPdf.setTextColor(211, 47, 47);
     docPdf.text("Relatório de Endereço - MS ESTOQUE", 14, 20);
     
-    docPdf.setFontSize(12);
+    docPdf.setFontSize(11);
     docPdf.setTextColor(51, 51, 51);
-    docPdf.text(`Endereço: Rua ${end.rua} - Modulo ${end.modulo}`, 14, 30);
-    docPdf.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 37);
-    docPdf.text(`Responsável: ${usernameDB}`, 14, 44);
+    docPdf.text(`Endereço: ${end.rua} - Picking: ${end.modulo} | Responsável: ${usernameDB}`, 14, 28);
+    docPdf.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 34);
 
+    // Adicionado coluna Descrição do Volume
     const body = vols.map(v => {
         const p = dbState.produtos[v.produtoId] || {};
-        return [p.fornNome, p.codigo, p.nome, v.codigo, v.quantidade];
+        return [p.fornNome, p.codigo, p.nome, v.codigo, v.descricao || "---", v.quantidade];
     });
 
     docPdf.autoTable({
-        startY: 50,
-        head: [['Fornecedor', 'M.', 'Descrição do Produto', 'SKU', 'Qtd']],
+        startY: 40,
+        head: [['Fornecedor', 'M.', 'Produto', 'SKU', 'Descrição do Volume', 'Qtd']],
         body: body,
         theme: 'striped',
-        headStyles: { fillColor: [211, 47, 47] }
+        headStyles: { fillColor: [211, 47, 47] },
+        styles: { fontSize: 9 }
     });
 
-    const finalY = docPdf.lastAutoTable.finalY + 10;
     docPdf.setFont("helvetica", "bold");
-    docPdf.text(`Total de Volumes: ${total}`, 14, finalY);
+    docPdf.text(`TOTAL DE VOLUMES NO LOCAL: ${total}`, 14, docPdf.lastAutoTable.finalY + 10);
 
-    docPdf.save(`Estoque_Rua_${end.rua}_Mod_${end.modulo}.pdf`);
+    docPdf.save(`Relatorio_End_${end.rua}_Pick_${end.modulo}.pdf`);
 };
 
 window.exportarExcel = (endId) => {
@@ -367,9 +373,10 @@ window.exportarExcel = (endId) => {
         const p = dbState.produtos[v.produtoId] || {};
         return {
             "Fornecedor": p.fornNome,
-            "M.": p.codigo,
+            "Marcação": p.codigo,
             "Produto": p.nome,
             "SKU": v.codigo,
+            "Descrição do Volume": v.descricao || "---", // Inclusão da descrição
             "Quantidade": v.quantidade
         };
     });
@@ -377,12 +384,14 @@ window.exportarExcel = (endId) => {
     const ws = XLSX.utils.json_to_sheet(dados);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Estoque");
-    XLSX.writeFile(wb, `Estoque_Rua_${end.rua}_Mod_${end.modulo}.xlsx`);
+    XLSX.writeFile(wb, `Estoque_End_${end.rua}_Pick_${end.modulo}.xlsx`);
 };
 
 // --- BASE MODAL ---
 
 function openModalBase(title, html, confirmAction, extraHtml = "") {
+    // Garante que o botão VOLTAR volte a aparecer por padrão ao abrir qualquer modal
+    document.getElementById("btnModalVoltar").style.display = "block";
     document.getElementById("modalTitle").innerText = title;
     document.getElementById("modalBody").innerHTML = html;
     document.getElementById("modalExtraActions").innerHTML = extraHtml;
