@@ -32,23 +32,11 @@
           <label>DATA FIM:</label>
           <input type="date" id="filtroDataFim">
         </div>
-        <div class="filter-group">
-          <label>AÇÃO:</label>
-          <select id="filtroTipo">
-            <option value="Todos">Todas as Ações</option>
-            <option value="Entrada">Entradas</option>
-            <option value="Saída">Saídas</option>
-            <option value="Tentativa de Exclusão Bloqueada">Tentativa de Exclusão Bloqueada</option>
-            <option value="Transferência">Transferência</option>
-            <option value="Criação de SKU">Criação de SKU</option>
-            <option value="Criação Produto Master">Criação Produto Master</option>
-            <option value="Exclusão Produto Master">Exclusão Produto Master</option>
-            <option value="Exclusão de SKU">Exclusão de SKU</option>
-            <option value="Edição Produto Master">Edição Produto Master</option>
-            <option value="Edição de SKU">Edição de SKU</option>
-          </select>
+        <div class="filter-group" style="flex-grow: 1;">
+          <label>BUSCAR (PRODUTO, SKU OU AÇÃO):</label>
+          <input type="text" id="inputBusca" placeholder="Ex: Lateral Direita ou Entrada...">
         </div>
-        <button id="btnLimpar" class="btn-nav" style="background: var(--primary); height: 40px;">LIMPAR FILTROS</button>
+        <button id="btnLimpar" class="btn-nav" style="background: var(--primary); height: 40px; align-self: flex-end;">LIMPAR</button>
       </div>
     </div>
 
@@ -57,12 +45,10 @@
         <table>
           <thead>
             <tr>
-              <th>DATA / HORA</th>
-              <th>OPERADOR</th>
-              <th>PRODUTO / SKU</th>
-              <th>AÇÃO</th>
-              <th>QTD</th>
-              <th style="text-align: right; padding-right: 20px;">AÇÕES</th>
+              <th style="width: 180px;">DATA / HORA</th>
+              <th style="width: 150px;">OPERADOR</th>
+              <th>DESCRIÇÃO DO EVENTO</th>
+              <th style="width: 80px;">QTD</th>
             </tr>
           </thead>
           <tbody id="tabelaHist"></tbody>
