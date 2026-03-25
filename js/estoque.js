@@ -135,6 +135,8 @@ function renderizarTudo() {
     document.getElementById("countDisplay").innerText = totalVisiveis;
 }
 
+// --- MODAIS E AÇÕES ---
+
 window.abrirDetalhesEndereco = (endId) => {
     dbState.ultimoEnderecoAberto = { id: endId }; 
     const volumes = dbState.volumes.filter(v => v.enderecoId === endId && v.quantidade > 0);
@@ -158,14 +160,19 @@ window.abrirDetalhesEndereco = (endId) => {
             </div>`;
     }).join('');
 
-    openModalBase(`Endereço: RUA ${end.rua} - MOD ${end.modulo}`, `
+    const extraActions = `
+        <button onclick="window.exportarPDF('${endId}')" class="btn" style="background:#e74c3c; color:white; padding:5px 10px; font-size:12px;" title="Exportar PDF"><i class="fas fa-file-pdf"></i></button>
+        <button onclick="window.exportarExcel('${endId}')" class="btn" style="background:#27ae60; color:white; padding:5px 10px; font-size:12px;" title="Exportar Excel"><i class="fas fa-file-excel"></i></button>
+        ${userRole === 'admin' ? `<button onclick="window.abrirModalEditarEnd('${endId}')" class="btn" style="background:#2980b9; color:white; padding:5px 10px; font-size:12px;" title="Editar Local"><i class="fas fa-edit"></i></button>` : ''}
+    `;
+
+    openModalBase(`RUA ${end.rua} - MOD ${end.modulo}`, `
         <div style="max-height: 400px; overflow-y: auto;">
             ${htmlVols.length > 0 ? htmlVols : '<div style="text-align:center; padding:15px; color:#999;">Vazio</div>'}
         </div>
-    `, () => window.fecharModal());
+    `, () => window.fecharModal(), extraActions);
     
-    document.querySelector("#modalMaster button[onclick='window.fecharModal()']").style.display = "none";
-    document.querySelector("#modalMaster .btn-primary").innerText = "Fechar";
+    document.getElementById("btnModalConfirmar").innerText = "Fechar";
 };
 
 window.abrirModalNovoEnd = () => {
@@ -182,6 +189,30 @@ window.abrirModalNovoEnd = () => {
             await addDoc(collection(db, "enderecos"), { rua: rua, modulo: mod });
             window.fecharModal();
         } catch(e) { alert("Erro ao salvar endereço"); }
+    });
+    document.getElementById("btnModalConfirmar").innerText = "Salvar Local";
+};
+
+window.abrirModalEditarEnd = (endId) => {
+    const end = dbState.enderecos.find(e => e.id === endId);
+    openModalBase("Editar Endereço", `
+        <label>Endereço:</label>
+        <input type="text" id="editRua" value="${end.rua}" style="text-transform:uppercase;">
+        <label>Picking:</label>
+        <input type="number" id="editMod" value="${end.modulo}">
+    `, async () => {
+        const novaRua = document.getElementById("editRua").value.trim().toUpperCase();
+        const novoMod = document.getElementById("editMod").value.trim();
+        if(!novaRua || !novoMod) return alert("Campos obrigatórios!");
+        try {
+            await updateDoc(doc(db, "enderecos", endId), { rua: novaRua, modulo: novoMod });
+            // Registrar alteração no histórico
+            await addDoc(collection(db, "movimentacoes"), {
+                tipo: "Edição de Endereço", produto: "Sistema", quantidade: 0, usuario: usernameDB, data: serverTimestamp(),
+                de: `RUA ${end.rua} MOD ${end.modulo}`, para: `RUA ${novaRua} MOD ${novoMod}`
+            });
+            window.fecharModal();
+        } catch(e) { alert("Erro ao editar"); }
     });
 };
 
@@ -205,18 +236,17 @@ window.abrirModalMover = (volId) => {
             ${endsFiltrados.map(e => `<option value="${e.id}">RUA ${e.rua} - MOD ${e.modulo}</option>`).join('')}
         </select>
     `, window.confirmarMovimento);
-    document.querySelector("#modalMaster .btn-primary").innerText = "Confirmar";
+    document.getElementById("btnModalConfirmar").innerText = "Confirmar Movimento";
 };
 
 window.confirmarMovimento = async () => {
     const volId = document.getElementById("modalVolId").value;
     const destId = document.getElementById("selDestino").value;
-    const inputQtd = document.getElementById("qtdMover");
-    const qtd = parseInt(inputQtd.value);
+    const qtd = parseInt(document.getElementById("qtdMover").value);
     
     const vol = dbState.volumes.find(v => v.id === volId);
     if(!destId) return alert("Selecione um destino!");
-    if(qtd <= 0 || qtd > vol.quantidade) return alert("Quantidade inválida ou maior que o disponível!");
+    if(qtd <= 0 || qtd > vol.quantidade) return alert("Quantidade inválida!");
 
     const endOrigem = dbState.enderecos.find(e => e.id === vol.enderecoId) || {rua:"PENDENTE", modulo:""};
     const endDest = dbState.enderecos.find(e => e.id === destId);
@@ -238,7 +268,7 @@ window.confirmarMovimento = async () => {
             para: `RUA ${endDest.rua} MOD ${endDest.modulo}`
         });
 
-        await window.fecharModal(); // Adicionado await aqui
+        await window.fecharModal();
     } catch(e) { alert("Erro ao mover"); }
 };
 
@@ -255,7 +285,7 @@ window.abrirModalSaida = (volId) => {
         <label>Quantidade de Saída:</label>
         <input type="number" id="qtdSaida" value="${vol.quantidade}" min="1" max="${vol.quantidade}" style="width:100%;">
     `, window.confirmarSaida);
-    document.querySelector("#modalMaster .btn-primary").innerText = "Confirmar Saída";
+    document.getElementById("btnModalConfirmar").innerText = "Confirmar Saída";
 };
 
 window.confirmarSaida = async () => {
@@ -274,7 +304,7 @@ window.confirmarSaida = async () => {
                 tipo: "Saída", produto: vol.descricao, quantidade: qtd, usuario: usernameDB, data: serverTimestamp(),
                 de: vol.enderecoId ? "ESTOQUE" : "PENDENTE", para: "BAIXA"
             });
-            await window.fecharModal(); // Adicionado await aqui
+            await window.fecharModal();
         } catch(e) { alert("Erro na saída"); }
     }
 };
@@ -289,12 +319,75 @@ window.deletarLocal = async (id) => {
     }
 };
 
-function openModalBase(title, html, confirmAction) {
+// --- EXPORTAÇÃO ---
+
+window.exportarPDF = (endId) => {
+    const { jsPDF } = window.jspdf;
+    const docPdf = new jsPDF();
+    const end = dbState.enderecos.find(e => e.id === endId);
+    const vols = dbState.volumes.filter(v => v.enderecoId === endId && v.quantidade > 0);
+    const total = vols.reduce((acc, v) => acc + v.quantidade, 0);
+
+    // Cabeçalho
+    docPdf.setFontSize(18);
+    docPdf.setTextColor(211, 47, 47); // Primary color
+    docPdf.text("Relatório de Endereço - MS ESTOQUE", 14, 20);
+    
+    docPdf.setFontSize(12);
+    docPdf.setTextColor(51, 51, 51);
+    docPdf.text(`Endereço: Rua ${end.rua} - Modulo ${end.modulo}`, 14, 30);
+    docPdf.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 37);
+    docPdf.text(`Responsável: ${usernameDB}`, 14, 44);
+
+    const body = vols.map(v => {
+        const p = dbState.produtos[v.produtoId] || {};
+        return [p.fornNome, p.codigo, p.nome, v.codigo, v.quantidade];
+    });
+
+    docPdf.autoTable({
+        startY: 50,
+        head: [['Fornecedor', 'M.', 'Descrição do Produto', 'SKU', 'Qtd']],
+        body: body,
+        theme: 'striped',
+        headStyles: { fillColor: [211, 47, 47] }
+    });
+
+    const finalY = docPdf.lastAutoTable.finalY + 10;
+    docPdf.setFont("helvetica", "bold");
+    docPdf.text(`Total de Volumes: ${total}`, 14, finalY);
+
+    docPdf.save(`Estoque_Rua_${end.rua}_Mod_${end.modulo}.pdf`);
+};
+
+window.exportarExcel = (endId) => {
+    const end = dbState.enderecos.find(e => e.id === endId);
+    const vols = dbState.volumes.filter(v => v.enderecoId === endId && v.quantidade > 0);
+    
+    const dados = vols.map(v => {
+        const p = dbState.produtos[v.produtoId] || {};
+        return {
+            "Fornecedor": p.fornNome,
+            "M.": p.codigo,
+            "Produto": p.nome,
+            "SKU": v.codigo,
+            "Quantidade": v.quantidade
+        };
+    });
+
+    const ws = XLSX.utils.json_to_sheet(dados);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Estoque");
+    XLSX.writeFile(wb, `Estoque_Rua_${end.rua}_Mod_${end.modulo}.xlsx`);
+};
+
+// --- BASE MODAL ---
+
+function openModalBase(title, html, confirmAction, extraHtml = "") {
     document.getElementById("modalTitle").innerText = title;
     document.getElementById("modalBody").innerHTML = html;
+    document.getElementById("modalExtraActions").innerHTML = extraHtml;
     document.getElementById("modalMaster").style.display = "flex";
-    document.querySelector("#modalMaster button[onclick='window.fecharModal()']").style.display = "block"; 
-    document.querySelector("#modalMaster .btn-primary").onclick = confirmAction;
+    document.getElementById("btnModalConfirmar").onclick = confirmAction;
 }
 
 window.fecharModal = async () => {
@@ -302,7 +395,7 @@ window.fecharModal = async () => {
     document.getElementById("modalMaster").style.display = "none";
     await loadAll();
     
-    if ((modalTitle.includes("Movimentar") || modalTitle.includes("Saída")) && dbState.ultimoEnderecoAberto) {
+    if ((modalTitle.includes("Movimentar") || modalTitle.includes("Saída") || modalTitle.includes("Editar")) && dbState.ultimoEnderecoAberto) {
         setTimeout(() => {
             window.abrirDetalhesEndereco(dbState.ultimoEnderecoAberto.id);
         }, 100);
