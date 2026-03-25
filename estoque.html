@@ -6,6 +6,9 @@
   <title>Simonetti - Gestão de Estoque</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="css/estoque.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -43,12 +46,12 @@
   </div>
 
   <div class="content">
-    <div class="glass-panel" style="display:flex; gap:10px; align-items:center;">
+    <div class="glass-panel" style="display:flex; gap:10px; align-items:center; flex-wrap: wrap;">
         <input type="text" id="filtroCod" placeholder="Cód. Prod/SKU" onkeyup="window.filtrarEstoque()" style="width:130px;">
-        <select id="filtroForn" onchange="window.filtrarEstoque()" style="flex:1;">
+        <select id="filtroForn" onchange="window.filtrarEstoque()" style="flex:1; min-width: 150px;">
             <option value="">Todos os Fornecedores</option>
         </select>
-        <input type="text" id="filtroDesc" placeholder="Descrição..." onkeyup="window.filtrarEstoque()" style="flex:2;">
+        <input type="text" id="filtroDesc" placeholder="Descrição..." onkeyup="window.filtrarEstoque()" style="flex:2; min-width: 150px;">
         <button onclick="window.limparFiltros()" class="btn" style="background:#6c757d; color:white;"><i class="fas fa-eraser"></i></button>
         <div id="countDisplay" style="background:var(--primary); color:white; padding:8px 15px; border-radius:5px; font-weight:bold;">0</div>
     </div>
@@ -59,11 +62,14 @@
 
 <div id="modalMaster" class="modal">
   <div class="modal-content">
-    <h3 id="modalTitle" style="margin-top:0; color:var(--primary); font-size: 18px;">Ação</h3>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 id="modalTitle" style="margin:0; color:var(--primary); font-size: 18px;">Ação</h3>
+        <div id="modalExtraActions" style="display: flex; gap: 8px;"></div>
+    </div>
     <div id="modalBody"></div>
-    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
-      <button onclick="window.fecharModal()" class="btn" style="background:#eee; flex:1;">Voltar</button>
-      <button class="btn btn-primary" style="flex:1;">Confirmar</button>
+    <div id="modalFooter" style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+      <button id="btnModalVoltar" onclick="window.fecharModal()" class="btn" style="background:#eee; flex:1;">Voltar</button>
+      <button id="btnModalConfirmar" class="btn btn-primary" style="flex:1;">Confirmar</button>
     </div>
   </div>
 </div>
