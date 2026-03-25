@@ -373,7 +373,7 @@ window.exportarExcel = (endId) => {
         const p = dbState.produtos[v.produtoId] || {};
         return {
             "Fornecedor": p.fornNome,
-            "Marcação": p.codigo,
+            "Codigo": p.codigo,
             "Produto": p.nome,
             "SKU": v.codigo,
             "Descrição do Volume": v.descricao || "---", // Inclusão da descrição
