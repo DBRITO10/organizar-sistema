@@ -326,13 +326,29 @@ window.deletarLocal = async (id) => {
     }
 };
 
-// --- EXPORTAÇÃO ---
+// --- EXPORTAÇÃO (ATUALIZADA COM AGRUPAMENTO) ---
 
 window.exportarPDF = (endId) => {
     const { jsPDF } = window.jspdf;
-    const docPdf = new jsPDF('l', 'mm', 'a4'); // Paisagem para caber a descrição
+    const docPdf = new jsPDF('l', 'mm', 'a4'); 
     const end = dbState.enderecos.find(e => e.id === endId);
-    const vols = dbState.volumes.filter(v => v.enderecoId === endId && v.quantidade > 0);
+    
+    // 1. Pegamos os volumes e filtramos
+    let vols = dbState.volumes.filter(v => v.enderecoId === endId && v.quantidade > 0);
+    
+    // 2. Lógica de Agrupamento/Ordenação (Fornecedor -> Código do Produto)
+    vols.sort((a, b) => {
+        const pA = dbState.produtos[a.produtoId] || {};
+        const pB = dbState.produtos[b.produtoId] || {};
+        
+        // Compara Fornecedor
+        const compForn = (pA.fornNome || "").localeCompare(pB.fornNome || "");
+        if (compForn !== 0) return compForn;
+        
+        // Se for o mesmo fornecedor, compara o Código do Produto
+        return (pA.codigo || "").localeCompare(pB.codigo || "");
+    });
+
     const total = vols.reduce((acc, v) => acc + v.quantidade, 0);
 
     docPdf.setFontSize(18);
@@ -344,7 +360,6 @@ window.exportarPDF = (endId) => {
     docPdf.text(`Endereço: ${end.rua} - Picking: ${end.modulo} | Responsável: ${usernameDB}`, 14, 28);
     docPdf.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 34);
 
-    // Adicionado coluna Descrição do Volume
     const body = vols.map(v => {
         const p = dbState.produtos[v.produtoId] || {};
         return [p.fornNome, p.codigo, p.nome, v.codigo, v.descricao || "---", v.quantidade];
@@ -352,7 +367,7 @@ window.exportarPDF = (endId) => {
 
     docPdf.autoTable({
         startY: 40,
-        head: [['Fornecedor', 'Codigo', 'Produto', 'SKU', 'Descrição do Volume', 'Qtd']],
+        head: [['Fornecedor', 'Código', 'Produto', 'SKU', 'Descrição do Volume', 'Qtd']],
         body: body,
         theme: 'striped',
         headStyles: { fillColor: [211, 47, 47] },
@@ -367,16 +382,27 @@ window.exportarPDF = (endId) => {
 
 window.exportarExcel = (endId) => {
     const end = dbState.enderecos.find(e => e.id === endId);
-    const vols = dbState.volumes.filter(v => v.enderecoId === endId && v.quantidade > 0);
+    
+    // 1. Pegamos os volumes e filtramos
+    let vols = dbState.volumes.filter(v => v.enderecoId === endId && v.quantidade > 0);
+    
+    // 2. Lógica de Agrupamento/Ordenação (Fornecedor -> Código do Produto)
+    vols.sort((a, b) => {
+        const pA = dbState.produtos[a.produtoId] || {};
+        const pB = dbState.produtos[b.produtoId] || {};
+        const compForn = (pA.fornNome || "").localeCompare(pB.fornNome || "");
+        if (compForn !== 0) return compForn;
+        return (pA.codigo || "").localeCompare(pB.codigo || "");
+    });
     
     const dados = vols.map(v => {
         const p = dbState.produtos[v.produtoId] || {};
         return {
             "Fornecedor": p.fornNome,
-            "Codigo": p.codigo,
+            "Código": p.codigo,
             "Produto": p.nome,
             "SKU": v.codigo,
-            "Descrição do Volume": v.descricao || "---", // Inclusão da descrição
+            "Descrição do Volume": v.descricao || "---",
             "Quantidade": v.quantidade
         };
     });
