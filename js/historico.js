@@ -71,9 +71,6 @@ function renderizarTabela(dados) {
             <td><strong>${item.produto}</strong><br><small>${item.de} ➔ ${item.para}</small></td>
             <td class="tipo-${item.tipo.replace(/\s+/g, '-')}">${item.tipo}</td>
             <td><strong>${item.quantidade}</strong></td>
-            <td style="text-align: right; padding-right: 20px;">
-                <button class="btn-nav" style="background:#eee; color:#666; padding:5px 10px;" onclick="alert('ID: ${item.id}')">
-                    <i class="fas fa-info-circle"></i>
                 </button>
             </td>
         </tr>
