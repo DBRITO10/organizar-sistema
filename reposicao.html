@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Reposição de Peças</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/produtos.css">
+    <style>
+        .alerta-vermelho { background-color: #ffcccc !important; color: #b71c1c; font-weight: bold; }
+        .input-minimo { width: 60px; padding: 5px; border: 1px solid #ccc; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <a href="pagina.html" style="color: white;"><i class="fas fa-arrow-left"></i></a>
+            <span style="font-weight:bold;">ALERTAS DE ESTOQUE BAIXO</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="glass-panel" style="margin-bottom:15px;">
+            <label>Definir Alerta Geral (unidades): </label>
+            <input type="number" id="minimoGeral" value="5" class="input-minimo" oninput="renderizar()">
+            <small style="margin-left:10px; color: #666;">(Itens abaixo deste valor ficam vermelhos e sobem no topo)</small>
+        </div>
+
+        <div class="glass-panel" style="padding:0">
+            <table id="tblReposicao">
+                <thead>
+                    <tr>
+                        <th>DESCRIÇÃO DO VOLUME</th>
+                        <th>SKU</th>
+                        <th>QTD ATUAL</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoReposicao"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db } from "./js/firebase-config.js";
+        import { collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        let todosVolumes = [];
+
+        async function buscarDados() {
+            const snap = await getDocs(collection(db, "volumes"));
+            todosVolumes = snap.docs.map(doc => doc.data());
+            window.renderizar();
+        }
+
+        window.renderizar = () => {
+            const limite = Number(document.getElementById("minimoGeral").value);
+            const tbody = document.getElementById("corpoReposicao");
+
+            // Ordena para que os que estão abaixo do limite fiquem no topo
+            const ordenados = [...todosVolumes].sort((a, b) => {
+                const aBaixo = (Number(a.quantidade) || 0) <= limite;
+                const bBaixo = (Number(b.quantidade) || 0) <= limite;
+                return bBaixo - aBaixo;
+            });
+
+            tbody.innerHTML = ordenados.map(v => {
+                const qtd = Number(v.quantidade) || 0;
+                const critico = qtd <= limite;
+                return `
+                    <tr class="${critico ? 'alerta-vermelho' : ''}">
+                        <td>${v.descricao}</td>
+                        <td>${v.codigo}</td>
+                        <td>${qtd}</td>
+                        <td>${critico ? '⚠️ REPOR' : '✅ OK'}</td>
+                    </tr>
+                `;
+            }).join('');
+        };
+
+        buscarDados();
+    </script>
+</body>
+</html>
