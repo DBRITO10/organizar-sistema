@@ -1,6 +1,6 @@
 import { db, auth } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { collection, getDocs, query, orderBy, limit, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { collection, getDocs, query, orderBy, limit, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 let historicoCompleto = [];
 
@@ -12,8 +12,13 @@ function dataBrasiliaISO() {
 
 onAuthStateChanged(auth, async user => {
     if (user) {
+        // Busca o nome do usuário na coleção 'users' usando o UID do login
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+        const nomeExibicao = userDoc.exists() ? userDoc.data().nomeCompleto : user.email;
+
         const labelUser = document.getElementById("labelUser");
-        if(labelUser) labelUser.innerHTML = `<i class="fas fa-user-circle"></i> ${user.email}`;
+        if(labelUser) labelUser.innerHTML = `<i class="fas fa-user-circle"></i> ${nomeExibicao}`;
         
         const hoje = dataBrasiliaISO();
         const inputInicio = document.getElementById("filtroDataInicio");
@@ -68,18 +73,18 @@ function renderizarTabela(dados) {
         <tr>
             <td>${item.data ? item.data.toDate().toLocaleString('pt-BR') : '---'}</td>
             <td><small>${item.usuario || 'Sistema'}</small></td>
-            <td><strong>${item.produto}</strong><br><small>${item.de} ➔ ${item.para}</small></td>
-            <td><strong>${item.quantidade}</strong></td>
-            <td style="text-align: right; padding-right: 20px;">
-                <button class="btn-nav" style="background:#eee; color:#666; padding:5px 10px;" onclick="alert('ID: ${item.id}')">
-                    <i class="fas fa-info-circle"></i>
-                </button>
+            <td>
+                <strong>${item.produto || 'Sem Descrição'}</strong><br>
+                <small style="color: #666;">SKU: ${item.sku || 'N/A'}</small>
             </td>
+            <td>${item.tipo || '---'}</td>
+            <td><strong>${item.quantidade || 0}</strong></td>
+            <td style="text-align: right; padding-right: 20px;">
+                </td>
         </tr>
     `).join('');
 }
 
-// Listeners com verificação de existência
 const btnLimpar = document.getElementById("btnLimpar");
 if(btnLimpar) {
     btnLimpar.onclick = () => {
