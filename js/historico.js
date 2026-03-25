@@ -12,7 +12,6 @@ function dataBrasiliaISO() {
 
 onAuthStateChanged(auth, async user => {
     if (user) {
-        // Busca o nome do usuário na coleção 'users' usando o UID do login
         const userDocRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userDocRef);
         const nomeExibicao = userDoc.exists() ? userDoc.data().nomeCompleto : user.email;
@@ -21,11 +20,8 @@ onAuthStateChanged(auth, async user => {
         if(labelUser) labelUser.innerHTML = `<i class="fas fa-user-circle"></i> ${nomeExibicao}`;
         
         const hoje = dataBrasiliaISO();
-        const inputInicio = document.getElementById("filtroDataInicio");
-        const inputFim = document.getElementById("filtroDataFim");
-        
-        if(inputInicio) inputInicio.value = hoje;
-        if(inputFim) inputFim.value = hoje;
+        if(document.getElementById("filtroDataInicio")) document.getElementById("filtroDataInicio").value = hoje;
+        if(document.getElementById("filtroDataFim")) document.getElementById("filtroDataFim").value = hoje;
         
         carregarDados();
     } else {
@@ -45,22 +41,21 @@ async function carregarDados() {
 }
 
 function filtrarHistorico() {
-    const inputInicio = document.getElementById("filtroDataInicio");
-    const inputFim = document.getElementById("filtroDataFim");
-    const inputTipo = document.getElementById("filtroTipo");
-
-    if (!inputInicio || !inputFim || !inputTipo) return;
-
-    const dataInicio = inputInicio.value;
-    const dataFim = inputFim.value;
-    const tipo = inputTipo.value;
+    const dataInicio = document.getElementById("filtroDataInicio").value;
+    const dataFim = document.getElementById("filtroDataFim").value;
+    const termoBusca = document.getElementById("inputBusca").value.toLowerCase();
 
     const filtrados = historicoCompleto.filter(item => {
         if (!item.data) return false;
         const dataItem = item.data.toDate().toISOString().split('T')[0];
         const bateData = (!dataInicio || dataItem >= dataInicio) && (!dataFim || dataItem <= dataFim);
-        const bateTipo = (tipo === "Todos" || item.tipo === tipo);
-        return bateData && bateTipo;
+        
+        // Busca na descrição montada ou no operador
+        const descricaoCompleta = `${item.tipo} ${item.produto} ${item.sku} ${item.de} ${item.para}`.toLowerCase();
+        const operador = (item.usuario || "").toLowerCase();
+        const bateBusca = descricaoCompleta.includes(termoBusca) || operador.includes(termoBusca);
+
+        return bateData && bateBusca;
     });
 
     renderizarTabela(filtrados);
@@ -69,41 +64,36 @@ function filtrarHistorico() {
 function renderizarTabela(dados) {
     const tbody = document.getElementById("tabelaHist");
     if(!tbody) return;
-    tbody.innerHTML = dados.map(item => `
-        <tr>
-            <td>${item.data ? item.data.toDate().toLocaleString('pt-BR') : '---'}</td>
-            <td><small>${item.usuario || 'Sistema'}</small></td>
-            <td>
-                <strong>${item.produto || 'Sem Descrição'}</strong><br>
-                <small style="color: #666;">SKU: ${item.sku || 'N/A'}</small>
-            </td>
-            <td>${item.tipo || '---'}</td>
-            <td><strong>${item.quantidade || 0}</strong></td>
-            <td style="text-align: right; padding-right: 20px;">
-                </td>
-        </tr>
-    `).join('');
+    
+    tbody.innerHTML = dados.map(item => {
+        // Monta a frase da descrição baseada no que aconteceu
+        let acaoDescricao = `<strong>${item.tipo || 'Movimentação'}:</strong> ${item.produto || 'Item'}`;
+        if(item.de && item.para) acaoDescricao += `<br><small>${item.de} ➔ ${item.para}</small>`;
+        if(item.sku) acaoDescricao += ` <small>(SKU: ${item.sku})</small>`;
+
+        return `
+            <tr>
+                <td>${item.data ? item.data.toDate().toLocaleString('pt-BR') : '---'}</td>
+                <td>${item.usuario || 'Sistema'}</td>
+                <td>${acaoDescricao}</td>
+                <td style="font-weight: bold;">${item.quantidade || 0}</td>
+            </tr>
+        `;
+    }).join('');
 }
 
-const btnLimpar = document.getElementById("btnLimpar");
-if(btnLimpar) {
-    btnLimpar.onclick = () => {
-        const hoje = dataBrasiliaISO();
-        document.getElementById("filtroDataInicio").value = hoje;
-        document.getElementById("filtroDataFim").value = hoje;
-        document.getElementById("filtroTipo").value = "Todos";
-        filtrarHistorico();
-    };
-}
+// Eventos
+document.getElementById("btnLimpar").onclick = () => {
+    const hoje = dataBrasiliaISO();
+    document.getElementById("filtroDataInicio").value = hoje;
+    document.getElementById("filtroDataFim").value = hoje;
+    document.getElementById("inputBusca").value = "";
+    filtrarHistorico();
+};
 
-const fInicio = document.getElementById("filtroDataInicio");
-if(fInicio) fInicio.addEventListener("change", filtrarHistorico);
-
-const fFim = document.getElementById("filtroDataFim");
-if(fFim) fFim.addEventListener("change", filtrarHistorico);
-
-const fTipo = document.getElementById("filtroTipo");
-if(fTipo) fTipo.addEventListener("change", filtrarHistorico);
+document.getElementById("inputBusca").addEventListener("input", filtrarHistorico);
+document.getElementById("filtroDataInicio").addEventListener("change", filtrarHistorico);
+document.getElementById("filtroDataFim").addEventListener("change", filtrarHistorico);
 
 const btnLogout = document.getElementById("btnLogout");
 if(btnLogout) btnLogout.onclick = () => signOut(auth).then(() => window.location.href = "index.html");
