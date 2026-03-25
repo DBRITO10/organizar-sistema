@@ -326,7 +326,7 @@ window.deletarLocal = async (id) => {
     }
 };
 
-// --- EXPORTAÇÃO (ATUALIZADA COM AGRUPAMENTO) ---
+// --- EXPORTAÇÃO (ATUALIZADA COM AGRUPAMENTO SEQUENCIAL POR GRADE/VOLUME) ---
 
 window.exportarPDF = (endId) => {
     const { jsPDF } = window.jspdf;
@@ -336,24 +336,28 @@ window.exportarPDF = (endId) => {
     // 1. Pegamos os volumes e filtramos
     let vols = dbState.volumes.filter(v => v.enderecoId === endId && v.quantidade > 0);
     
-    // 2. Lógica de Agrupamento/Ordenação (Fornecedor -> Código do Produto)
+    // 2. Lógica de Ordenação Sequencial (Fornecedor -> Produto -> Descrição)
     vols.sort((a, b) => {
         const pA = dbState.produtos[a.produtoId] || {};
         const pB = dbState.produtos[b.produtoId] || {};
         
-        // Compara Fornecedor
+        // Primeiro: Agrupa por Fornecedor
         const compForn = (pA.fornNome || "").localeCompare(pB.fornNome || "");
         if (compForn !== 0) return compForn;
         
-        // Se for o mesmo fornecedor, compara o Código do Produto
-        return (pA.codigo || "").localeCompare(pB.codigo || "");
+        // Segundo: Agrupa por Nome do Produto (para manter a grade junta)
+        const compProd = (pA.nome || "").localeCompare(pB.nome || "");
+        if (compProd !== 0) return compProd;
+
+        // Terceiro: Ordena pela Descrição do Volume (Sequencial: Vol 1, Vol 2...)
+        return (a.descricao || "").localeCompare(b.descricao || "", undefined, {numeric: true, sensitivity: 'base'});
     });
 
     const total = vols.reduce((acc, v) => acc + v.quantidade, 0);
 
     docPdf.setFontSize(18);
     docPdf.setTextColor(211, 47, 47);
-    docPdf.text("Relatório de Endereço - MS ESTOQUE", 14, 20);
+    docPdf.text("Relatório de Endereço - MS ESTOQUE 600", 14, 20);
     
     docPdf.setFontSize(11);
     docPdf.setTextColor(51, 51, 51);
@@ -386,13 +390,18 @@ window.exportarExcel = (endId) => {
     // 1. Pegamos os volumes e filtramos
     let vols = dbState.volumes.filter(v => v.enderecoId === endId && v.quantidade > 0);
     
-    // 2. Lógica de Agrupamento/Ordenação (Fornecedor -> Código do Produto)
+    // 2. Lógica de Ordenação Sequencial (Fornecedor -> Produto -> Descrição)
     vols.sort((a, b) => {
         const pA = dbState.produtos[a.produtoId] || {};
         const pB = dbState.produtos[b.produtoId] || {};
+        
         const compForn = (pA.fornNome || "").localeCompare(pB.fornNome || "");
         if (compForn !== 0) return compForn;
-        return (pA.codigo || "").localeCompare(pB.codigo || "");
+        
+        const compProd = (pA.nome || "").localeCompare(pB.nome || "");
+        if (compProd !== 0) return compProd;
+
+        return (a.descricao || "").localeCompare(b.descricao || "", undefined, {numeric: true, sensitivity: 'base'});
     });
     
     const dados = vols.map(v => {
