@@ -352,7 +352,7 @@ window.exportarPDF = (endId) => {
 
     docPdf.autoTable({
         startY: 40,
-        head: [['Fornecedor', 'M.', 'Produto', 'SKU', 'Descrição do Volume', 'Qtd']],
+        head: [['Fornecedor', 'Codigo', 'Produto', 'SKU', 'Descrição do Volume', 'Qtd']],
         body: body,
         theme: 'striped',
         headStyles: { fillColor: [211, 47, 47] },
