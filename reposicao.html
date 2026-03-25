@@ -15,6 +15,7 @@
         .input-busca { flex-grow: 1; padding: 12px; border: 1px solid var(--border); border-radius: 8px; outline: none; }
         .user-info { display: flex; align-items: center; gap: 15px; font-size: 0.9rem; }
         td small { display: block; color: #666; font-size: 0.75rem; }
+        .btn-export { padding: 10px 15px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
     </style>
 </head>
 <body>
@@ -34,7 +35,14 @@
     <div class="container">
         <div class="glass-panel search-container">
             <i class="fas fa-search" style="align-self: center; color: var(--primary);"></i>
-            <input type="text" id="inputBusca" class="input-busca" placeholder="Buscar por Fornecedor, Produto, SKU ou Volume..." oninput="filtrarTabela()">
+            <input type="text" id="inputBusca" class="input-busca" placeholder="Buscar por Fornecedor, Produto, SKU ou Volume..." oninput="window.filtrarTabela()">
+            
+            <button onclick="window.exportarExcel()" class="btn-export" style="background: #1f6f43;">
+                <i class="fas fa-file-excel"></i> EXCEL
+            </button>
+            <button onclick="window.gerarPDF()" class="btn-export" style="background: #b71c1c;">
+                <i class="fas fa-file-pdf"></i> PDF
+            </button>
         </div>
 
         <div class="glass-panel" style="padding:0; overflow-x: auto;">
@@ -45,7 +53,7 @@
                         <th>PRODUTO (Mestre)</th>
                         <th>DESCRIÇÃO DO VOLUME</th>
                         <th>CÓD. VOLUME</th>
-                        <th>QTD ATUAL</th>
+                        <th style="text-align:center">QTD ATUAL</th>
                         <th>ALERTA (Min)</th>
                         <th>STATUS</th>
                     </tr>
@@ -55,6 +63,10 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
     <script type="module">
         import { db, auth } from "./js/firebase-config.js";
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
@@ -62,7 +74,7 @@
 
         let todosDados = [];
 
-        // Verificação de Usuário
+        // Verificação de Usuário e Inicialização
         onAuthStateChanged(auth, async user => {
             if (user) {
                 const userDoc = await getDoc(doc(db, "users", user.uid));
@@ -74,43 +86,62 @@
             }
         });
 
-        // Logout
         document.getElementById("btnLogout").onclick = () => signOut(auth).then(() => window.location.href = "index.html");
 
         async function carregarInformacoes() {
-            // Pegamos Volumes e Fornecedores para cruzar os nomes
-            const [snapVols, snapForn] = await Promise.all([
-                getDocs(collection(db, "volumes")),
-                getDocs(collection(db, "fornecedores"))
-            ]);
+            try {
+                // BUSCA CRUZADA: Volumes + Produtos + Fornecedores
+                const [snapVols, snapProds, snapForn] = await Promise.all([
+                    getDocs(collection(db, "volumes")),
+                    getDocs(collection(db, "produtos")),
+                    getDocs(collection(db, "fornecedores"))
+                ]);
 
-            const fornecedoresMap = {};
-            snapForn.forEach(d => fornecedoresMap[d.id] = d.data().nome);
+                // Mapeia fornecedores por ID
+                const fornMap = {};
+                snapForn.forEach(d => fornMap[d.id] = d.data().nome);
 
-            todosDados = snapVols.docs.map(d => {
-                const data = d.data();
-                return {
-                    id: d.id,
-                    fornecedor: fornecedoresMap[data.fornecedorId] || "---",
-                    produtoNome: data.descricaoProduto || "---", // Assumindo que você salva o nome do mestre no volume ou cruza
-                    produtoSku: data.codigoProduto || "---",
-                    volDesc: data.descricao || "---",
-                    volCod: data.codigo || "---",
-                    quantidade: Number(data.quantidade) || 0,
-                    estoqueMinimo: Number(data.estoqueMinimo) || 0
-                };
-            });
+                // Mapeia produtos master por ID
+                const prodsMap = {};
+                snapProds.forEach(d => {
+                    const p = d.data();
+                    prodsMap[d.id] = {
+                        nome: p.descricao,
+                        sku: p.codigo,
+                        fornecedor: fornMap[p.fornecedorId] || "Não definido"
+                    };
+                });
 
-            renderizar(todosDados);
+                // Monta a lista final cruzando o volume com o seu produto pai
+                todosDados = snapVols.docs.map(d => {
+                    const vol = d.data();
+                    const master = prodsMap[vol.produtoId] || {};
+                    
+                    return {
+                        id: d.id,
+                        fornecedor: master.fornecedor || "---",
+                        produtoNome: master.nome || "---",
+                        produtoSku: master.sku || "---",
+                        volDesc: vol.descricao || "---",
+                        volCod: vol.codigo || "---",
+                        quantidade: Number(vol.quantidade) || 0,
+                        estoqueMinimo: Number(vol.estoqueMinimo) || 0
+                    };
+                });
+
+                renderizar(todosDados);
+            } catch (error) {
+                console.error("Erro ao carregar dados:", error);
+            }
         }
 
         window.renderizar = (dados) => {
             const tbody = document.getElementById("corpoReposicao");
             
-            // Ordena: Críticos primeiro
+            // Ordenação: Itens que precisam de reposição primeiro
             const ordenados = [...dados].sort((a, b) => {
-                const aCritico = a.quantidade <= a.estoqueMinimo && a.estoqueMinimo > 0;
-                const bCritico = b.quantidade <= b.estoqueMinimo && b.estoqueMinimo > 0;
+                const aCritico = a.estoqueMinimo > 0 && a.quantidade <= a.estoqueMinimo;
+                const bCritico = b.estoqueMinimo > 0 && b.quantidade <= b.estoqueMinimo;
                 return bCritico - aCritico;
             });
 
@@ -119,14 +150,14 @@
                 return `
                     <tr class="${critico ? 'alerta-vermelho' : ''}">
                         <td>${v.fornecedor}</td>
-                        <td><strong>${v.produtoNome}</strong><br><small>SKU: ${v.produtoSku}</small></td>
+                        <td><strong>${v.produtoNome}</strong><br><small>SKU Master: ${v.produtoSku}</small></td>
                         <td>${v.volDesc}</td>
                         <td>${v.volCod}</td>
                         <td style="text-align:center"><strong>${v.quantidade}</strong></td>
                         <td>
                             <div style="display:flex; align-items:center;">
                                 <input type="number" id="min-${v.id}" value="${v.estoqueMinimo}" class="input-alerta">
-                                <button onclick="window.salvarAlerta('${v.id}')" class="btn-save-alerta" title="Salvar Alerta">
+                                <button onclick="window.salvarAlerta('${v.id}')" class="btn-save-alerta" title="Salvar Alerta Individual">
                                     <i class="fas fa-save"></i>
                                 </button>
                             </div>
@@ -155,17 +186,58 @@
                 await updateDoc(doc(db, "volumes", id), {
                     estoqueMinimo: novoMinimo
                 });
-                // Atualiza o cache local para não precisar baixar tudo de novo
                 const index = todosDados.findIndex(item => item.id === id);
                 if(index !== -1) todosDados[index].estoqueMinimo = novoMinimo;
-                
-                alert("Alerta atualizado!");
+                alert("Alerta de estoque atualizado com sucesso!");
                 renderizar(todosDados);
             } catch (e) {
-                console.error(e);
-                alert("Erro ao salvar.");
+                alert("Erro ao salvar alerta.");
             }
         };
+
+        // --- FUNÇÕES DE EXPORTAÇÃO ---
+        window.exportarExcel = () => {
+            const dadosExcel = todosDados.map(item => ({
+                "Fornecedor": item.fornecedor,
+                "Produto Master": item.produtoNome,
+                "SKU Master": item.produtoSku,
+                "Descrição Volume": item.volDesc,
+                "Cód. Volume": item.volCod,
+                "Qtd Atual": item.quantidade,
+                "Estoque Mínimo": item.estoqueMinimo,
+                "Status": item.quantidade <= item.estoqueMinimo ? "REPOR" : "OK"
+            }));
+            const ws = XLSX.utils.json_to_sheet(dadosExcel);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Reposição de Estoque");
+            XLSX.writeFile(wb, "Relatorio_Reposicao_Simonetti.xlsx");
+        };
+
+        window.gerarPDF = () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('l', 'mm', 'a4'); // Paisagem para caber todas as colunas
+            
+            doc.setFontSize(16);
+            doc.text("Relatório de Alertas de Reposição - Móveis Simonetti", 14, 15);
+            
+            const head = [['Fornecedor', 'Produto', 'Descrição Volume', 'Cód. Vol', 'Qtd', 'Mín', 'Status']];
+            const body = todosDados.map(v => [
+                v.fornecedor, v.produtoNome, v.volDesc, v.volCod, v.quantidade, v.estoqueMinimo, 
+                (v.quantidade <= v.estoqueMinimo ? "REPOR" : "OK")
+            ]);
+
+            doc.autoTable({
+                head: head,
+                body: body,
+                startY: 25,
+                theme: 'grid',
+                headStyles: { fillColor: [211, 47, 47] }, // Vermelho Simonetti
+                styles: { fontSize: 8 }
+            });
+
+            doc.save("Relatorio_Reposicao.pdf");
+        };
+
     </script>
 </body>
 </html>
