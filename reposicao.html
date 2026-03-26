@@ -199,10 +199,10 @@
         window.exportarExcel = () => {
             const dadosExcel = todosDados.map(item => ({
                 "Fornecedor": item.fornecedor,
-                "Produto Master": item.produtoNome,
                 "Código": item.produtoSku,
-                "Descrição Volume": item.volDesc,
+                "Produto Master": item.produtoNome,
                 "Cód. Volume": item.volCod,
+                "Descrição Volume": item.volDesc,
                 "Qtd Atual": item.quantidade,
                 "Estoque Mínimo": item.estoqueMinimo,
                 "Status": item.quantidade <= item.estoqueMinimo ? "REPOR" : "OK"
