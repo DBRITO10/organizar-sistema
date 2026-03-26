@@ -35,7 +35,7 @@
     <div class="container">
         <div class="glass-panel search-container">
             <i class="fas fa-search" style="align-self: center; color: var(--primary);"></i>
-            <input type="text" id="inputBusca" class="input-busca" placeholder="Buscar por Fornecedor, Produto, SKU ou Volume..." oninput="window.filtrarTabela()">
+            <input type="text" id="inputBusca" class="input-busca" placeholder="Buscar por Fornecedor, Produto, Código ou Volume..." oninput="window.filtrarTabela()">
             
             <button onclick="window.exportarExcel()" class="btn-export" style="background: #1f6f43;">
                 <i class="fas fa-file-excel"></i> EXCEL
@@ -150,7 +150,7 @@
                 return `
                     <tr class="${critico ? 'alerta-vermelho' : ''}">
                         <td>${v.fornecedor}</td>
-                        <td><strong>${v.produtoNome}</strong><br><small>SKU Master: ${v.produtoSku}</small></td>
+                        <td><strong>${v.produtoNome}</strong><br><small>CÓDIGO: ${v.produtoSku}</small></td>
                         <td>${v.volDesc}</td>
                         <td>${v.volCod}</td>
                         <td style="text-align:center"><strong>${v.quantidade}</strong></td>
@@ -200,7 +200,7 @@
             const dadosExcel = todosDados.map(item => ({
                 "Fornecedor": item.fornecedor,
                 "Produto Master": item.produtoNome,
-                "SKU Master": item.produtoSku,
+                "CÓDIGO": item.produtoSku,
                 "Descrição Volume": item.volDesc,
                 "Cód. Volume": item.volCod,
                 "Qtd Atual": item.quantidade,
