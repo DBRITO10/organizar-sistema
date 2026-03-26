@@ -106,7 +106,7 @@
                 snapProds.forEach(d => {
                     const p = d.data();
                     prodsMap[d.id] = {
-                        nome: p.descricao,
+                        nome: p.nome,
                         sku: p.codigo,
                         fornecedor: fornMap[p.fornecedorId] || "Não definido"
                     };
