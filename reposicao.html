@@ -200,7 +200,7 @@
             const dadosExcel = todosDados.map(item => ({
                 "Fornecedor": item.fornecedor,
                 "Produto Master": item.produtoNome,
-                "CÓDIGO": item.produtoSku,
+                "Código": item.produtoSku,
                 "Descrição Volume": item.volDesc,
                 "Cód. Volume": item.volCod,
                 "Qtd Atual": item.quantidade,
@@ -220,9 +220,9 @@
             doc.setFontSize(16);
             doc.text("Relatório de Alertas de Reposição - Móveis Simonetti", 14, 15);
             
-            const head = [['Fornecedor', 'Produto', 'Descrição Volume', 'Cód. Vol', 'Qtd', 'Mín', 'Status']];
+            const head = [['Fornecedor', 'Código', 'Produto', 'Descrição Volume', 'Cód. Vol', 'Qtd', 'Mín', 'Status']];
             const body = todosDados.map(v => [
-                v.fornecedor, v.produtoNome, v.volDesc, v.volCod, v.quantidade, v.estoqueMinimo, 
+                v.fornecedor,v.produtoSku, v.produtoNome, v.volDesc, v.volCod, v.quantidade, v.estoqueMinimo, 
                 (v.quantidade <= v.estoqueMinimo ? "REPOR" : "OK")
             ]);
 
